@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta property="og:title" content="김현수의 경력기술서 메이트">
+<meta property="og:description" content="성과 중심 경력기술서를 단계별로 완성하는 도구">
+<meta property="og:image" content="../김현수.jpg">
+<title>경력기술서 메이트 - 김현수</title>
+<style>
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+:root {
+    --brand: #44398a;
+    --brand-light: #ece9fb;
+    --text: #1f1d2b;
+    --muted: #6b6880;
+    --line: #e2e0ee;
+    --bg: #f6f5fb;
+    --card: #ffffff;
+    --good: #1f8a4c;
+    --warn: #c47a00;
+    --bad: #c0392b;
+}
+* { box-sizing: border-box; font-family: "Pretendard", sans-serif; }
+body { margin: 0; background: var(--bg); color: var(--text); }
+header {
+    background: var(--brand); color: white; padding: 20px 16px;
+    display: flex; align-items: center; gap: 14px;
+}
+header .profile {
+    width: 48px; height: 48px; border-radius: 50%; border: 2px solid white;
+    background: url('../김현수.jpg') center / cover; flex-shrink: 0;
+}
+header h1 { font-size: 20px; margin: 0; }
+header p { font-size: 13px; margin: 2px 0 0; opacity: .85; }
+header a.home { margin-left: auto; white-space: nowrap; color: white; font-size: 13px; text-decoration: none; opacity: .85; }
+
+.steps {
+    display: flex; gap: 6px; max-width: 960px; margin: 16px auto 0; padding: 0 16px;
+    overflow-x: auto;
+}
+.steps button {
+    flex: 1; min-width: 110px; padding: 10px 8px; border: 1px solid var(--line); border-radius: 8px;
+    background: white; color: var(--muted); font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.steps button.active { background: var(--brand); color: white; border-color: var(--brand); }
+
+main { max-width: 960px; margin: 16px auto 60px; padding: 0 16px; }
+section.panel { display: none; }
+section.panel.active { display: block; }
+.card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 20px; margin-bottom: 16px;
+}
+.card h2 { font-size: 18px; margin: 0 0 4px; }
+.card .desc { font-size: 13px; color: var(--muted); margin: 0 0 16px; line-height: 1.6; }
+label { display: block; font-size: 13px; font-weight: 600; margin: 12px 0 6px; }
+input, textarea, select {
+    width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px;
+    font-size: 14px; background: white; color: var(--text);
+}
+textarea { min-height: 72px; resize: vertical; line-height: 1.5; }
+input:focus, textarea:focus, select:focus { outline: 2px solid var(--brand-light); border-color: var(--brand); }
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 640px) { .row { grid-template-columns: 1fr; } }
+
+.btn {
+    display: inline-block; padding: 10px 16px; border-radius: 8px; border: 1px solid var(--brand);
+    background: var(--brand); color: white; font-size: 14px; font-weight: 600; cursor: pointer;
+}
+.btn.ghost { background: white; color: var(--brand); }
+.btn.small { padding: 6px 10px; font-size: 12px; }
+.btn.danger { background: white; color: var(--bad); border-color: var(--bad); }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+
+.item { border: 1px dashed var(--line); border-radius: 10px; padding: 16px; margin-top: 12px; background: #fcfcff; }
+.item-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.item-head strong { font-size: 15px; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.chip {
+    padding: 5px 10px; border-radius: 999px; background: var(--brand-light); color: var(--brand);
+    font-size: 12px; cursor: pointer; border: none;
+}
+.chip:hover { background: var(--brand); color: white; }
+
+.generated {
+    margin-top: 12px; padding: 12px; background: var(--brand-light); border-radius: 8px;
+    font-size: 14px; line-height: 1.6;
+}
+.generated .label { font-size: 12px; font-weight: 700; color: var(--brand); margin-bottom: 4px; }
+
+.score-box { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
+.score { font-size: 40px; font-weight: 800; color: var(--brand); }
+.checks { list-style: none; padding: 0; margin: 0; }
+.checks li { padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 14px; line-height: 1.5; }
+.checks li:last-child { border-bottom: none; }
+.ok { color: var(--good); font-weight: 700; }
+.warn { color: var(--warn); font-weight: 700; }
+.bad { color: var(--bad); font-weight: 700; }
+
+.tips { font-size: 13px; color: var(--muted); line-height: 1.7; padding-left: 18px; margin: 0; }
+
+/* 미리보기 (출력용 문서) */
+.doc { background: white; border: 1px solid var(--line); border-radius: 12px; padding: 40px; color: #111; }
+.doc h1 { font-size: 26px; margin: 0; }
+.doc .headline { color: var(--muted); margin: 6px 0 4px; }
+.doc .contact { font-size: 13px; color: var(--muted); overflow-wrap: anywhere; }
+.doc h3 { font-size: 16px; border-bottom: 2px solid var(--brand); padding-bottom: 6px; margin: 28px 0 12px; color: var(--brand); }
+.doc .summary { font-size: 14px; line-height: 1.7; white-space: pre-wrap; }
+.doc .company { margin-bottom: 20px; }
+.doc .company-head { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px; }
+.doc .company-head strong { font-size: 16px; }
+.doc .period { font-size: 13px; color: var(--muted); }
+.doc .role { font-size: 13px; color: var(--muted); margin: 2px 0 8px; }
+.doc .project { margin: 10px 0 0 0; padding-left: 12px; border-left: 3px solid var(--brand-light); }
+.doc .project strong { font-size: 14px; }
+.doc ul { margin: 6px 0 0; padding-left: 18px; }
+.doc li { font-size: 14px; line-height: 1.7; }
+.doc .skills { font-size: 14px; line-height: 1.7; }
+.doc.simple h3 { border-bottom: 1px solid #333; color: #111; }
+.doc.simple .project { border-left-color: #ddd; }
+
+.toast {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    background: #222; color: white; padding: 10px 18px; border-radius: 8px; font-size: 13px;
+    opacity: 0; transition: opacity .2s; pointer-events: none;
+}
+.toast.show { opacity: 1; }
+
+@media print {
+    header, .steps, .no-print, .toast { display: none !important; }
+    body { background: white; }
+    main { margin: 0; max-width: none; padding: 0; }
+    section.panel { display: none !important; }
+    section#p-preview { display: block !important; }
+    .doc { border: none; padding: 0; }
+}
+</style>
+</head>
+<body>
+
+<header>
+    <div class="profile"></div>
+    <div>
+        <h1>경력기술서 메이트</h1>
+        <p>김현수 · 취향을 설계하는 기획자🔥 · 자동 저장됨</p>
+    </div>
+    <a class="home" href="../index.html">← 링크 모음</a>
+</header>
+
+<nav class="steps">
+    <button data-step="basic" class="active">1. 기본 정보</button>
+    <button data-step="career">2. 경력·프로젝트</button>
+    <button data-step="skills">3. 역량·키워드</button>
+    <button data-step="check">4. 진단·첨삭</button>
+    <button data-step="preview">5. 미리보기·저장</button>
+</nav>
+
+<main>
+    <!-- 1. 기본 정보 -->
+    <section class="panel active" id="p-basic">
+        <div class="card">
+            <h2>기본 정보</h2>
+            <p class="desc">지원할 직무를 먼저 정하면, 이후 단계에서 직무에 맞는 키워드와 문장 예시를 추천해 드려요.</p>
+            <div class="row">
+                <div><label>이름</label><input data-f="name" placeholder="김현수"></div>
+                <div>
+                    <label>지원 직무</label>
+                    <select data-f="job">
+                        <option value="planning">서비스·상품 기획 (PM/PO)</option>
+                        <option value="marketing">마케팅·브랜딩</option>
+                        <option value="md">MD·커머스</option>
+                        <option value="data">데이터 분석</option>
+                        <option value="sales">영업·사업개발</option>
+                        <option value="hr">인사·경영지원</option>
+                        <option value="dev">개발</option>
+                        <option value="etc">기타</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div><label>지원 회사 (선택)</label><input data-f="target" placeholder="예) ○○커머스"></div>
+                <div><label>총 경력</label><input data-f="years" placeholder="예) 3년 2개월"></div>
+            </div>
+            <div class="row">
+                <div><label>이메일</label><input data-f="email" placeholder="you@example.com"></div>
+                <div><label>연락처</label><input data-f="phone" placeholder="010-0000-0000"></div>
+            </div>
+            <label>링크 (포트폴리오·링크드인 등)</label>
+            <input data-f="link" placeholder="https://www.linkedin.com/in/...">
+            <label>한 줄 소개 (헤드라인)</label>
+            <input data-f="headline" placeholder="예) 고객 취향 데이터로 구매 전환을 설계하는 서비스 기획자">
+            <label>핵심 요약 (3~4줄)</label>
+            <textarea data-f="summary" placeholder="나는 어떤 문제를, 어떤 방식으로 풀어 어떤 성과를 낸 사람인가?"></textarea>
+            <button class="btn ghost small" id="btn-summary" style="margin-top:8px">입력한 경력으로 요약 초안 만들기</button>
+            <div class="actions"><button class="btn" data-go="career">다음: 경력 입력 →</button></div>
+        </div>
+    </section>
+
+    <!-- 2. 경력·프로젝트 -->
+    <section class="panel" id="p-career">
+        <div class="card">
+            <h2>경력 · 프로젝트</h2>
+            <p class="desc">
+                프로젝트마다 <b>상황(문제) → 내 역할·행동 → 결과(숫자)</b> 순서로 적으면,
+                경력기술서 문장을 자동으로 만들어 드려요. 결과에는 가능한 한 숫자(%, 원, 명, 건, 일)를 넣어주세요.
+            </p>
+            <div id="companies"></div>
+            <div class="actions">
+                <button class="btn ghost" id="add-company">+ 회사 추가</button>
+                <button class="btn" data-go="skills">다음: 역량·키워드 →</button>
+            </div>
+        </div>
+        <div class="card">
+            <h2>성과 동사 · 숫자 표현 도우미</h2>
+            <p class="desc">눌러서 복사한 뒤, 행동/결과 칸에 붙여 넣어 쓰세요.</p>
+            <div class="chips" id="verb-chips"></div>
+        </div>
+    </section>
+
+    <!-- 3. 역량·키워드 -->
+    <section class="panel" id="p-skills">
+        <div class="card">
+            <h2>핵심 역량 · 키워드</h2>
+            <p class="desc">채용공고에 자주 등장하는 직무 키워드예요. 내 경험과 맞는 것만 눌러 추가하세요.</p>
+            <div class="chips" id="kw-chips"></div>
+            <label>핵심 역량 (쉼표로 구분)</label>
+            <textarea data-f="skills" placeholder="예) 서비스 기획, 사용자 리서치, A/B 테스트"></textarea>
+            <label>툴 · 기술</label>
+            <input data-f="tools" placeholder="예) Figma, Notion, Jira, SQL, GA4, Amplitude">
+            <label>학력 · 자격 · 교육</label>
+            <textarea data-f="edu" placeholder="한 줄에 하나씩 입력"></textarea>
+        </div>
+        <div class="card">
+            <h2>채용공고 키워드 매칭</h2>
+            <p class="desc">지원할 공고의 자격요건·우대사항을 붙여 넣으면, 내 경력기술서에 빠진 키워드를 찾아드려요.</p>
+            <textarea id="jd" data-f="jd" style="min-height:120px" placeholder="채용공고 내용을 붙여 넣으세요"></textarea>
+            <div id="jd-result" class="generated" style="display:none"></div>
+            <div class="actions"><button class="btn" data-go="check">다음: 진단 →</button></div>
+        </div>
+    </section>
+
+    <!-- 4. 진단·첨삭 -->
+    <section class="panel" id="p-check">
+        <div class="card">
+            <h2>경력기술서 진단</h2>
+            <p class="desc">인사담당자가 보는 기준으로 자동 점검해요. 빨간 항목부터 고쳐보세요.</p>
+            <div class="score-box"><div class="score" id="score">0</div><div id="score-msg" class="desc" style="margin:0"></div></div>
+            <ul class="checks" id="checks"></ul>
+        </div>
+        <div class="card">
+            <h2>작성 원칙</h2>
+            <ul class="tips">
+                <li>최신 경력부터 역순으로, 직무와 관련 깊은 프로젝트를 위에 배치하세요.</li>
+                <li>"담당했다"보다 "~해서 ~를 ○% 개선했다"처럼 행동과 결과를 함께 쓰세요.</li>
+                <li>팀 성과라면 내 기여 범위(예: 기획 100%, 데이터 분석 70%)를 밝혀주세요.</li>
+                <li>"열심히", "최선을" 같은 태도 표현은 자기소개서에, 경력기술서에는 사실과 숫자만.</li>
+                <li>한 문장은 80자 안팎, 한 프로젝트는 3~5개 불릿이 읽기 좋아요.</li>
+                <li>공고의 키워드를 그대로 써야 서류 검토(ATS 포함)에서 눈에 띕니다.</li>
+            </ul>
+            <div class="actions"><button class="btn" data-go="preview">다음: 미리보기 →</button></div>
+        </div>
+    </section>
+
+    <!-- 5. 미리보기 -->
+    <section class="panel" id="p-preview">
+        <div class="card no-print">
+            <h2>미리보기 · 저장</h2>
+            <p class="desc">PDF로 저장하려면 "PDF로 인쇄"를 누르고 대상에서 "PDF로 저장"을 고르세요.</p>
+            <div class="row">
+                <div>
+                    <label>템플릿</label>
+                    <select data-f="template">
+                        <option value="brand">포인트 컬러</option>
+                        <option value="simple">심플 흑백</option>
+                    </select>
+                </div>
+            </div>
+            <div class="actions">
+                <button class="btn" onclick="window.print()">PDF로 인쇄</button>
+                <button class="btn ghost" id="copy-text">텍스트 복사</button>
+                <button class="btn ghost" id="export-json">백업 파일 저장</button>
+                <label class="btn ghost" style="margin:0">백업 불러오기<input type="file" id="import-json" accept=".json" hidden></label>
+                <button class="btn danger" id="reset">전체 초기화</button>
+            </div>
+        </div>
+        <div class="doc" id="doc"></div>
+    </section>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STORAGE_KEY = 'cv-mate-hyunsu-v1';
+
+const KEYWORDS = {
+    planning: ['서비스 기획', '요구사항 정의', 'PRD 작성', '화면 설계(와이어프레임)', '사용자 리서치', 'VOC 분석', 'A/B 테스트', '지표 설계(KPI)', '퍼널 분석', '로드맵 수립', '애자일/스크럼', '이해관계자 커뮤니케이션', 'MVP 검증', '정책 설계', 'UX 개선', 'GA4', 'Amplitude', 'SQL', 'Figma', 'Jira'],
+    marketing: ['퍼포먼스 마케팅', '브랜드 전략', '콘텐츠 기획', 'CRM', 'SNS 운영', 'ROAS 개선', 'CAC 절감', '캠페인 기획', '인플루언서 협업', '타깃 세그먼트', 'GA4', 'Meta 광고', '카피라이팅', '시장 조사'],
+    md: ['상품 소싱', '카테고리 전략', '매출 분석', '프로모션 기획', '재고 관리', '가격 정책', '협력사 관리', 'GMV 성장', '기획전 운영', '트렌드 분석', '상품 큐레이션'],
+    data: ['SQL', 'Python', '대시보드 구축', '지표 설계', 'A/B 테스트 분석', '코호트 분석', '데이터 파이프라인', 'Tableau', '통계 분석', '예측 모델링', '데이터 기반 의사결정'],
+    sales: ['신규 고객 발굴', '제안서 작성', '파트너십 체결', '매출 목표 달성', '계약 협상', '고객 관계 관리', '시장 분석', 'B2B 영업', '사업 계획 수립'],
+    hr: ['채용 프로세스 개선', '평가·보상', '조직문화', '온보딩', 'HR 데이터 분석', '노무 관리', '교육 체계 수립', '인력 계획'],
+    dev: ['설계', '성능 개선', '리팩터링', '테스트 자동화', 'CI/CD', '코드 리뷰', '장애 대응', 'API 설계', '클라우드 인프라'],
+    etc: ['문제 해결', '프로젝트 관리', '커뮤니케이션', '데이터 분석', '프로세스 개선', '협업']
+};
+const VERBS = ['기획하여', '설계하여', '도입하여', '개선하여', '주도하여', '분석하여', '구축하여', '자동화하여', '협의하여', '검증하여', '재정의하여', '런칭하여',
+    '○% 증가', '○% 감소', '○억 원 매출', '○명 확보', '○일 → ○일 단축', '전환율 ○%p 상승', '월 ○건 처리', '비용 ○만 원 절감'];
+const WEAK_WORDS = ['열심히', '최선을', '노력', '성실', '다양한', '많은', '여러', '등을 담당', '참여했', '도움'];
+
+const blank = () => ({
+    name: '김현수', job: 'planning', target: '', years: '', email: '', phone: '',
+    link: 'https://www.linkedin.com/in/hyunsu-kim-2534a5204',
+    headline: '취향을 설계하는 기획자', summary: '', skills: '', tools: '', edu: '', jd: '', template: 'brand',
+    companies: [newCompany()]
+});
+function newCompany() {
+    return { name: '', dept: '', role: '', start: '', end: '', current: false, duty: '', projects: [newProject()] };
+}
+function newProject() {
+    return { title: '', period: '', situation: '', action: '', result: '', contribution: '', custom: '' };
+}
+
+let state = load();
+
+function load() {
+    try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) return Object.assign(blank(), JSON.parse(raw));
+    } catch (e) {}
+    return blank();
+}
+let saveTimer;
+function save() {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+    }, 300);
+}
+function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 1600);
+}
+const esc = s => String(s || '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const lines = s => String(s || '').split('\n').map(l => l.replace(/^[-•·*]\s*/, '').trim()).filter(Boolean);
+const hasNumber = s => /\d/.test(s || '');
+
+/* ---------- 단계 이동 ---------- */
+function go(step) {
+    document.querySelectorAll('.steps button').forEach(b => b.classList.toggle('active', b.dataset.step === step));
+    document.querySelectorAll('section.panel').forEach(p => p.classList.toggle('active', p.id === 'p-' + step));
+    if (step === 'check') renderCheck();
+    if (step === 'preview') renderDoc();
+    if (step === 'skills') { renderKeywords(); renderJd(); }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+document.querySelectorAll('.steps button').forEach(b => b.onclick = () => go(b.dataset.step));
+document.querySelectorAll('[data-go]').forEach(b => b.onclick = () => go(b.dataset.go));
+
+/* ---------- 단순 필드 바인딩 ---------- */
+document.querySelectorAll('[data-f]').forEach(el => {
+    el.value = state[el.dataset.f] || '';
+    el.addEventListener('input', () => {
+        state[el.dataset.f] = el.value;
+        save();
+        if (el.dataset.f === 'job') renderKeywords();
+        if (el.dataset.f === 'jd') renderJd();
+        if (el.dataset.f === 'template') renderDoc();
+    });
+});
+
+/* ---------- 문장 생성 ---------- */
+function stripEnding(s) {
+    return s.trim().replace(/[.。]$/, '').replace(/(했습니다|하였습니다|했음|했다|함|하였음)$/, '');
+}
+function bulletsFor(p) {
+    const out = [];
+    const sit = stripEnding(p.situation || '');
+    const acts = lines(p.action).map(stripEnding);
+    const res = lines(p.result).map(stripEnding);
+    if (sit) out.push(`[배경] ${sit}`);
+    if (acts.length) {
+        acts.forEach((a, i) => {
+            let s = a;
+            const r = res[i];
+            if (r) s += ` → ${r}`;
+            out.push(s);
+        });
+        res.slice(acts.length).forEach(r => out.push(`성과: ${r}`));
+    } else {
+        res.forEach(r => out.push(`성과: ${r}`));
+    }
+    if (p.contribution) out.push(`기여도: ${p.contribution}`);
+    return out;
+}
+function projectBullets(p) {
+    return p.custom && p.custom.trim() ? lines(p.custom) : bulletsFor(p);
+}
+
+/* ---------- 경력 렌더 ---------- */
+const companiesEl = document.getElementById('companies');
+function renderCompanies() {
+    companiesEl.innerHTML = '';
+    state.companies.forEach((c, ci) => {
+        const box = document.createElement('div');
+        box.className = 'item';
+        box.innerHTML = `
+            <div class="item-head"><strong>회사 ${ci + 1}</strong>
+                <span>
+                    ${ci > 0 ? '<button class="btn ghost small" data-act="up">↑</button>' : ''}
+                    <button class="btn danger small" data-act="del">삭제</button>
+                </span></div>
+            <div class="row">
+                <div><label>회사명</label><input data-c="name" placeholder="예) ○○커머스"></div>
+                <div><label>부서 / 직급</label><input data-c="dept" placeholder="예) 서비스기획팀 / 매니저"></div>
+            </div>
+            <div class="row">
+                <div><label>입사</label><input data-c="start" placeholder="2022.03"></div>
+                <div><label>퇴사</label><input data-c="end" placeholder="2024.06 또는 재직중"></div>
+            </div>
+            <label>담당 업무 요약</label>
+            <input data-c="duty" placeholder="예) 커머스 앱 탐색·추천 영역 기획 및 운영">
+            <div class="projects"></div>
+            <div class="actions"><button class="btn ghost small" data-act="addp">+ 프로젝트 추가</button></div>`;
+        box.querySelectorAll('[data-c]').forEach(el => {
+            el.value = c[el.dataset.c] || '';
+            el.oninput = () => { c[el.dataset.c] = el.value; save(); };
+        });
+        box.querySelector('[data-act="del"]').onclick = () => {
+            if (!confirm('이 회사를 삭제할까요?')) return;
+            state.companies.splice(ci, 1);
+            if (!state.companies.length) state.companies.push(newCompany());
+            save(); renderCompanies();
+        };
+        const up = box.querySelector('[data-act="up"]');
+        if (up) up.onclick = () => {
+            [state.companies[ci - 1], state.companies[ci]] = [state.companies[ci], state.companies[ci - 1]];
+            save(); renderCompanies();
+        };
+        box.querySelector('[data-act="addp"]').onclick = () => { c.projects.push(newProject()); save(); renderCompanies(); };
+
+        const pWrap = box.querySelector('.projects');
+        c.projects.forEach((p, pi) => {
+            const pb = document.createElement('div');
+            pb.className = 'item';
+            pb.style.background = 'white';
+            pb.innerHTML = `
+                <div class="item-head"><strong>프로젝트 ${pi + 1}</strong>
+                    <button class="btn danger small" data-act="delp">삭제</button></div>
+                <div class="row">
+                    <div><label>프로젝트명</label><input data-p="title" placeholder="예) 취향 기반 상품 추천 개편"></div>
+                    <div><label>기간</label><input data-p="period" placeholder="2023.04 ~ 2023.09"></div>
+                </div>
+                <label>상황 · 문제 (왜 했나?)</label>
+                <textarea data-p="situation" placeholder="예) 신규 고객의 첫 구매 전환율이 1.2%로 업계 평균보다 낮음"></textarea>
+                <label>내 역할 · 행동 (무엇을 어떻게? 한 줄에 하나)</label>
+                <textarea data-p="action" placeholder="예) 구매 로그 분석으로 취향 태그 30종을 정의하여 추천 로직을 설계&#10;예) 온보딩에 취향 선택 단계를 추가하고 A/B 테스트로 검증"></textarea>
+                <label>결과 · 성과 (숫자로! 위 행동과 같은 순서로 한 줄에 하나)</label>
+                <textarea data-p="result" placeholder="예) 첫 구매 전환율 1.2% → 2.1% (+75%)&#10;예) 온보딩 완료율 18%p 상승"></textarea>
+                <label>내 기여도 (선택)</label>
+                <input data-p="contribution" placeholder="예) 기획 100%, 데이터 분석 70% (팀 4명 중 PM)">
+                <div class="generated"><div class="label">자동 생성된 경력기술서 문장</div><ul class="gen-list" style="margin:0;padding-left:18px"></ul></div>
+                <label>직접 다듬기 (선택 · 입력하면 자동 문장 대신 사용)</label>
+                <textarea data-p="custom" placeholder="자동 문장을 복사해 다듬어 보세요. 한 줄 = 불릿 하나"></textarea>
+                <div class="actions"><button class="btn ghost small" data-act="copygen">자동 문장을 다듬기 칸으로 복사</button></div>`;
+            const genList = pb.querySelector('.gen-list');
+            const refreshGen = () => {
+                const b = bulletsFor(p);
+                genList.innerHTML = b.length ? b.map(x => `<li>${esc(x)}</li>`).join('') : '<li style="color:var(--muted)">상황·행동·결과를 입력하면 여기에 문장이 만들어져요.</li>';
+            };
+            pb.querySelectorAll('[data-p]').forEach(el => {
+                el.value = p[el.dataset.p] || '';
+                el.oninput = () => { p[el.dataset.p] = el.value; save(); refreshGen(); };
+            });
+            pb.querySelector('[data-act="delp"]').onclick = () => {
+                if (!confirm('이 프로젝트를 삭제할까요?')) return;
+                c.projects.splice(pi, 1);
+                save(); renderCompanies();
+            };
+            pb.querySelector('[data-act="copygen"]').onclick = () => {
+                p.custom = bulletsFor(p).join('\n');
+                pb.querySelector('[data-p="custom"]').value = p.custom;
+                save(); toast('다듬기 칸으로 복사했어요');
+            };
+            refreshGen();
+            pWrap.appendChild(pb);
+        });
+        companiesEl.appendChild(box);
+    });
+}
+document.getElementById('add-company').onclick = () => { state.companies.push(newCompany()); save(); renderCompanies(); };
+
+function renderVerbChips() {
+    document.getElementById('verb-chips').innerHTML = VERBS.map(v => `<button class="chip">${esc(v)}</button>`).join('');
+    document.querySelectorAll('#verb-chips .chip').forEach(ch => ch.onclick = () => copy(ch.textContent, `"${ch.textContent}" 복사됨`));
+}
+
+/* ---------- 키워드 ---------- */
+function renderKeywords() {
+    const list = KEYWORDS[state.job] || KEYWORDS.etc;
+    const el = document.getElementById('kw-chips');
+    el.innerHTML = list.map(k => `<button class="chip">${esc(k)}</button>`).join('');
+    el.querySelectorAll('.chip').forEach(ch => ch.onclick = () => {
+        const cur = (state.skills || '').split(',').map(s => s.trim()).filter(Boolean);
+        if (!cur.includes(ch.textContent)) cur.push(ch.textContent);
+        state.skills = cur.join(', ');
+        document.querySelector('[data-f="skills"]').value = state.skills;
+        save();
+    });
+}
+function allText() {
+    const parts = [state.headline, state.summary, state.skills, state.tools, state.edu];
+    state.companies.forEach(c => {
+        parts.push(c.name, c.dept, c.duty);
+        c.projects.forEach(p => parts.push(p.title, ...projectBullets(p)));
+    });
+    return parts.join(' ').toLowerCase();
+}
+function renderJd() {
+    const box = document.getElementById('jd-result');
+    const jd = (state.jd || '').toLowerCase();
+    if (!jd.trim()) { box.style.display = 'none'; return; }
+    const pool = new Set([...Object.values(KEYWORDS).flat()]);
+    // 공고 안의 영문 툴명 등도 후보로 포함
+    (state.jd.match(/[A-Za-z][A-Za-z0-9+#./]{1,}/g) || []).forEach(w => pool.add(w));
+    const key = k => k.toLowerCase().split('(')[0].trim();
+    let inJd = [...new Set([...pool].map(k => k.trim()))].filter(k => jd.includes(key(k)));
+    // "A/B"처럼 다른 키워드의 일부인 조각은 제외
+    inJd = inJd.filter(k => !inJd.some(o => o !== k && key(o).includes(key(k))));
+    const mine = allText();
+    const hit = inJd.filter(k => mine.includes(key(k)));
+    const miss = inJd.filter(k => !hit.includes(k));
+    box.style.display = 'block';
+    if (!inJd.length) { box.innerHTML = '공고에서 알려진 직무 키워드를 찾지 못했어요. 자격요건 부분을 더 붙여 넣어 보세요.'; return; }
+    const rate = Math.round(hit.length / inJd.length * 100);
+    box.innerHTML = `<div class="label">키워드 매칭률 ${rate}% (${hit.length}/${inJd.length})</div>
+        <div><span class="ok">포함됨</span> ${hit.map(esc).join(', ') || '-'}</div>
+        <div style="margin-top:6px"><span class="bad">빠짐</span> ${miss.map(esc).join(', ') || '없음 👍'}</div>
+        ${miss.length ? '<div style="margin-top:6px;font-size:13px;color:var(--muted)">실제로 해본 경험이라면 프로젝트 문장이나 핵심 역량에 그대로 넣어 주세요.</div>' : ''}`;
+}
+
+/* ---------- 요약 초안 ---------- */
+document.getElementById('btn-summary').onclick = () => {
+    const jobName = document.querySelector('[data-f="job"] option:checked').textContent.split(' (')[0];
+    const first = state.companies.find(c => c.name) || {};
+    const bestProj = state.companies.flatMap(c => c.projects).find(p => hasNumber(p.result)) || {};
+    const best = lines(bestProj.result)[0];
+    const sk = (state.skills || '').split(',').map(s => s.trim()).filter(Boolean).slice(0, 3);
+    const parts = [];
+    parts.push(`${state.years ? state.years + ' 경력의 ' : ''}${jobName} 담당자로, ${first.name ? first.name + '에서 ' + (first.duty || '관련 업무') + '를 맡아왔습니다.' : '관련 업무를 수행해 왔습니다.'}`);
+    if (bestProj.title && best) parts.push(`${bestProj.title} 프로젝트에서 ${stripEnding(best)}의 성과를 냈습니다.`);
+    if (sk.length) parts.push(`${sk.join(', ')} 역량을 바탕으로 문제를 정의하고 숫자로 검증하는 방식으로 일합니다.`);
+    if (state.target) parts.push(`${state.target}에서 이 경험을 바로 성과로 연결하겠습니다.`);
+    if (state.summary && !confirm('기존 요약을 초안으로 바꿀까요?')) return;
+    state.summary = parts.join('\n');
+    document.querySelector('[data-f="summary"]').value = state.summary;
+    save();
+};
+
+/* ---------- 진단 ---------- */
+function renderCheck() {
+    const checks = [];
+    const add = (level, msg) => checks.push({ level, msg });
+    const projects = state.companies.flatMap(c => c.projects.map(p => ({ c, p })));
+    const filled = projects.filter(({ p }) => p.title || p.action || p.result || p.custom);
+
+    state.headline ? add('ok', '한 줄 소개가 있어요.') : add('bad', '한 줄 소개(헤드라인)를 작성하세요. 첫 3초에 어떤 사람인지 보여줍니다.');
+    if (!state.summary) add('bad', '핵심 요약이 비어 있어요. 기본 정보 단계의 "요약 초안 만들기"를 써보세요.');
+    else if (state.summary.length > 400) add('warn', `핵심 요약이 ${state.summary.length}자예요. 300자 이내로 줄이면 더 잘 읽혀요.`);
+    else add('ok', '핵심 요약이 적당한 길이예요.');
+    (state.email || state.phone) ? add('ok', '연락처가 있어요.') : add('warn', '이메일이나 연락처를 넣어주세요.');
+
+    state.companies.forEach((c, i) => {
+        const n = c.name || `회사 ${i + 1}`;
+        if (!c.name) add('bad', `회사 ${i + 1}의 회사명이 비어 있어요.`);
+        if (!c.start) add('warn', `${n}: 근무 기간을 입력하세요.`);
+    });
+    if (!filled.length) add('bad', '프로젝트가 하나도 없어요. 직무와 관련된 프로젝트를 최소 2개 이상 적어보세요.');
+    else if (filled.length < 2) add('warn', '프로젝트가 1개뿐이에요. 2~4개를 권장해요.');
+
+    filled.forEach(({ c, p }) => {
+        const name = `${c.name || '회사'} · ${p.title || '이름 없는 프로젝트'}`;
+        const bullets = projectBullets(p);
+        const text = bullets.join(' ');
+        if (!p.title) add('warn', `${name}: 프로젝트명을 붙여주세요.`);
+        if (!p.custom && !p.situation) add('warn', `${name}: 상황·문제를 적으면 왜 이 일을 했는지가 드러나요.`);
+        if (!hasNumber(text)) add('bad', `${name}: 숫자로 된 성과가 없어요. 전환율, 매출, 기간 단축, 건수 등으로 표현해 보세요.`);
+        else add('ok', `${name}: 수치 성과가 포함돼 있어요.`);
+        const weak = WEAK_WORDS.filter(w => text.includes(w));
+        if (weak.length) add('warn', `${name}: 모호한 표현(${weak.join(', ')})을 구체적인 행동이나 숫자로 바꿔보세요.`);
+        const longOnes = bullets.filter(b => b.length > 120);
+        if (longOnes.length) add('warn', `${name}: 120자가 넘는 문장이 ${longOnes.length}개 있어요. 둘로 나눠보세요.`);
+        if (bullets.length > 6) add('warn', `${name}: 불릿이 ${bullets.length}개예요. 핵심 3~5개로 추려보세요.`);
+        if (!p.contribution && !p.custom) add('warn', `${name}: 팀 프로젝트라면 내 기여도를 밝혀주세요.`);
+    });
+
+    const sk = (state.skills || '').split(',').filter(s => s.trim());
+    sk.length >= 3 ? add('ok', `핵심 역량 ${sk.length}개가 정리돼 있어요.`) : add('warn', '핵심 역량을 3개 이상 정리하세요 (3단계에서 추천 키워드 클릭).');
+    if (state.jd) {
+        renderJd();
+        const m = document.querySelector('#jd-result .label');
+        if (m) add(/(\d+)%/.test(m.textContent) && +m.textContent.match(/(\d+)%/)[1] >= 60 ? 'ok' : 'warn', `채용공고 ${m.textContent}`);
+    } else add('warn', '지원할 채용공고를 3단계에 붙여 넣으면 키워드 매칭을 확인할 수 있어요.');
+
+    const weight = { ok: 1, warn: 0.5, bad: 0 };
+    const score = Math.round(checks.reduce((s, c) => s + weight[c.level], 0) / checks.length * 100);
+    document.getElementById('score').textContent = score;
+    document.getElementById('score-msg').textContent =
+        score >= 85 ? '제출해도 좋은 수준이에요! 공고별로 키워드만 맞춰주세요.' :
+        score >= 60 ? '뼈대는 잡혔어요. 노란 항목을 다듬으면 확 좋아져요.' :
+        '빨간 항목부터 하나씩 채워볼까요?';
+    const order = { bad: 0, warn: 1, ok: 2 };
+    const icon = { ok: '✔ 좋아요', warn: '▲ 보완', bad: '✖ 필수' };
+    document.getElementById('checks').innerHTML = checks.sort((a, b) => order[a.level] - order[b.level])
+        .map(c => `<li><span class="${c.level}">${icon[c.level]}</span> ${esc(c.msg)}</li>`).join('');
+}
+
+/* ---------- 미리보기 ---------- */
+function renderDoc() {
+    const d = document.getElementById('doc');
+    d.className = 'doc' + (state.template === 'simple' ? ' simple' : '');
+    const contact = [state.email, state.phone, state.link].filter(Boolean).map(esc).join(' · ');
+    let html = `<h1>${esc(state.name)}</h1>
+        ${state.headline ? `<div class="headline">${esc(state.headline)}</div>` : ''}
+        ${contact ? `<div class="contact">${contact}</div>` : ''}`;
+    if (state.summary) html += `<h3>핵심 요약</h3><div class="summary">${esc(state.summary)}</div>`;
+    const companies = state.companies.filter(c => c.name || c.projects.some(p => p.title || projectBullets(p).length));
+    if (companies.length) {
+        html += `<h3>경력 사항${state.years ? ` <span style="font-weight:400;font-size:13px">(총 ${esc(state.years)})</span>` : ''}</h3>`;
+        companies.forEach(c => {
+            const period = [c.start, c.end].filter(Boolean).join(' ~ ');
+            html += `<div class="company"><div class="company-head"><strong>${esc(c.name)}</strong><span class="period">${esc(period)}</span></div>
+                <div class="role">${esc([c.dept, c.duty].filter(Boolean).join(' | '))}</div>`;
+            c.projects.forEach(p => {
+                const b = projectBullets(p);
+                if (!p.title && !b.length) return;
+                html += `<div class="project"><strong>${esc(p.title)}</strong>${p.period ? ` <span class="period">${esc(p.period)}</span>` : ''}
+                    <ul>${b.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>`;
+            });
+            html += `</div>`;
+        });
+    }
+    if (state.skills || state.tools) {
+        html += `<h3>핵심 역량</h3><div class="skills">`;
+        if (state.skills) html += `<div><b>역량</b> ${esc(state.skills)}</div>`;
+        if (state.tools) html += `<div><b>툴</b> ${esc(state.tools)}</div>`;
+        html += `</div>`;
+    }
+    if (state.edu) html += `<h3>학력 · 자격 · 교육</h3><ul>${lines(state.edu).map(l => `<li>${esc(l)}</li>`).join('')}</ul>`;
+    d.innerHTML = html;
+}
+function plainText() {
+    const out = [state.name, state.headline, [state.email, state.phone, state.link].filter(Boolean).join(' · '), ''];
+    if (state.summary) out.push('[핵심 요약]', state.summary, '');
+    out.push('[경력 사항]');
+    state.companies.forEach(c => {
+        if (!c.name) return;
+        out.push(`■ ${c.name} (${[c.start, c.end].filter(Boolean).join(' ~ ')})`, [c.dept, c.duty].filter(Boolean).join(' | '));
+        c.projects.forEach(p => {
+            const b = projectBullets(p);
+            if (!p.title && !b.length) return;
+            out.push(`  ▶ ${p.title}${p.period ? ' (' + p.period + ')' : ''}`);
+            b.forEach(x => out.push(`   - ${x}`));
+        });
+        out.push('');
+    });
+    if (state.skills) out.push('[핵심 역량]', state.skills);
+    if (state.tools) out.push('[툴]', state.tools);
+    if (state.edu) out.push('', '[학력 · 자격 · 교육]', ...lines(state.edu));
+    return out.join('\n');
+}
+function copy(text, msg) {
+    navigator.clipboard.writeText(text).then(() => toast(msg || '복사됐어요'), () => toast('복사에 실패했어요'));
+}
+document.getElementById('copy-text').onclick = () => copy(plainText(), '경력기술서 텍스트를 복사했어요');
+document.getElementById('export-json').onclick = () => {
+    const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `경력기술서_${state.name || 'backup'}.json`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+};
+document.getElementById('import-json').onchange = e => {
+    const f = e.target.files[0];
+    if (!f) return;
+    f.text().then(t => {
+        try {
+            state = Object.assign(blank(), JSON.parse(t));
+            save(); refreshAll(); toast('불러왔어요');
+        } catch (err) { toast('파일 형식이 올바르지 않아요'); }
+    });
+};
+document.getElementById('reset').onclick = () => {
+    if (!confirm('입력한 내용을 모두 지울까요? (백업 파일을 먼저 저장하는 걸 추천해요)')) return;
+    state = blank(); save(); refreshAll(); toast('초기화했어요');
+};
+
+function refreshAll() {
+    document.querySelectorAll('[data-f]').forEach(el => el.value = state[el.dataset.f] || '');
+    renderCompanies(); renderKeywords(); renderJd(); renderDoc();
+}
+window.addEventListener('beforeprint', renderDoc);
+renderVerbChips();
+refreshAll();
+</script>
+</body>
+</html>
