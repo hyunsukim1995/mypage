@@ -56,7 +56,7 @@ header a.home { margin-left: auto; white-space: nowrap; color: white; font-size:
 .steps button small { display: block; font-size: 11px; font-weight: 500; opacity: .8; }
 .steps button.active { background: var(--brand); color: white; border-color: var(--brand); }
 
-main { max-width: 960px; margin: 16px auto 60px; padding: 0 16px; }
+main { max-width: 960px; margin: 16px auto 100px; padding: 0 16px; }
 section.panel { display: none; }
 section.panel.active { display: block; }
 .card {
@@ -154,15 +154,28 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--brand-light
 .doc.simple .project { border-left-color: #ddd; }
 .doc.simple .kpiline { color: #333; }
 
+.bottom-nav {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
+    background: rgba(255, 255, 255, .96); border-top: 1px solid var(--line);
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+}
+.bottom-nav .inner { max-width: 960px; margin: 0 auto; display: flex; align-items: center; gap: 8px; }
+.bottom-nav .label { flex: 1; text-align: center; font-size: 13px; color: var(--muted); }
+.bottom-nav .label b { color: var(--text); }
+.bottom-nav .btn[disabled] { opacity: .35; cursor: default; }
+.steps button.done small::before { content: '✓ '; }
+.steps button.done:not(.active) { border-color: var(--brand); color: var(--brand); }
+.intro ol { margin: 8px 0 0; padding-left: 20px; font-size: 14px; line-height: 1.8; }
+header button.help { white-space: nowrap; flex-shrink: 0; margin-left: 8px; background: transparent; border: 1px solid rgba(255,255,255,.6); color: white; border-radius: 999px; padding: 4px 10px; font-size: 12px; cursor: pointer; }
 .toast {
-    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    position: fixed; bottom: 84px; left: 50%; transform: translateX(-50%);
     background: #222; color: white; padding: 10px 18px; border-radius: 8px; font-size: 13px;
     opacity: 0; transition: opacity .2s; pointer-events: none;
 }
 .toast.show { opacity: 1; }
 
 @media print {
-    header, .dash, .steps, .no-print, .toast { display: none !important; }
+    header, .dash, .steps, .no-print, .toast, .bottom-nav { display: none !important; }
     body { background: white; }
     main { margin: 0; max-width: none; padding: 0; }
     section.panel { display: none !important; }
@@ -177,9 +190,10 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--brand-light
     <div class="profile"></div>
     <div>
         <h1>경력기술서 메이트</h1>
-        <p>김현수 · 취향을 설계하는 기획자🔥 · 자동 저장됨</p>
+        <p>김현수 · 취향을 설계하는 기획자🔥 · <span id="save-state">자동 저장됨</span></p>
     </div>
-    <a class="home" href="../index.html">← 링크 모음</a>
+    <a class="home" href="../index.html">← 홈</a>
+    <button class="help" id="open-intro">사용법</button>
 </header>
 
 <div class="dash" id="dash"></div>
@@ -200,6 +214,25 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--brand-light
 <main>
     <!-- 준비: 기본 정보 -->
     <section class="panel active" id="p-basic">
+        <div class="card intro" id="intro" style="display:none;border-color:var(--brand)">
+            <h2>👋 경력기술서 메이트 사용법</h2>
+            <p class="desc" style="margin:0">내가 한 일을 <b>성과 문장</b>으로 바꿔 경력기술서 한 편을 완성해요. 아래 순서대로 따라가면 돼요.
+                화면 아래 <b>다음 →</b> 버튼으로 넘어가고, 입력은 자동 저장돼요.</p>
+            <ol>
+                <li><b>성과 리스트업</b> — 해낸 일을 대충이라도 전부 적기</li>
+                <li><b>직무·키워드</b> — 실제로 해본 키워드만 고르기</li>
+                <li><b>KPI·성과</b> — KPI 고르고 성과를 숫자로 한 줄 (가장 중요!)</li>
+                <li><b>역할 작성</b> — 질문에 답하면 내가 한 일이 정리돼요</li>
+                <li><b>성과 완성</b> — 역할 + 결과 문장 후보 중 고르기</li>
+                <li><b>기술 작성</b> — 실제로 쓴 툴을 근거와 함께</li>
+                <li><b>결과물 확인</b> — 넣을 성과 고르고 PDF 저장</li>
+            </ol>
+            <p class="desc" style="margin:8px 0 0">처음이라면 <b>예시로 둘러보기</b>로 완성본을 먼저 보세요. (가상의 예시이며 언제든 초기화할 수 있어요)</p>
+            <div class="actions">
+                <button class="btn" id="intro-start">내 것으로 시작하기</button>
+                <button class="btn ghost" id="intro-sample">예시로 둘러보기</button>
+            </div>
+        </div>
         <div class="card">
             <h2>기본 정보</h2>
             <p class="desc">산업과 직무를 정하면 다음 단계에서 그에 맞는 KPI와 키워드를 추천해 드려요.</p>
@@ -501,6 +534,14 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--brand-light
     </section>
 </main>
 
+<nav class="bottom-nav">
+    <div class="inner">
+        <button class="btn ghost small" id="nav-prev">← 이전</button>
+        <span class="label" id="nav-label"></span>
+        <button class="btn small" id="nav-next">다음 →</button>
+    </div>
+</nav>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -755,6 +796,10 @@ function save() {
     saveTimer = setTimeout(() => {
         try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
         renderDash();
+        const ss = document.getElementById('save-state');
+        ss.textContent = '저장됨 ✓';
+        clearTimeout(ss._t);
+        ss._t = setTimeout(() => { ss.textContent = '자동 저장됨'; }, 1500);
     }, 250);
 }
 function toast(msg) {
@@ -800,18 +845,48 @@ const RENDER = {
     essay: renderEssay,
     interview: renderQuestions
 };
+const STEP_BTNS = [...document.querySelectorAll('.steps button')];
+const STEP_ORDER = STEP_BTNS.map(b => b.dataset.step);
+const stepName = b => b.querySelector('small').textContent;
 function go(step) {
-    document.querySelectorAll('.steps button').forEach(b => b.classList.toggle('active', b.dataset.step === step));
+    if (!RENDER[step]) step = 'basic';
+    STEP_BTNS.forEach(b => b.classList.toggle('active', b.dataset.step === step));
     document.querySelectorAll('section.panel').forEach(p => p.classList.toggle('active', p.id === 'p-' + step));
     RENDER[step]();
     renderDash();
+    try { localStorage.setItem('cv-mate-step', step); } catch (e) {}
+    const i = STEP_ORDER.indexOf(step);
+    document.getElementById('nav-prev').disabled = i === 0;
+    document.getElementById('nav-next').disabled = i === STEP_ORDER.length - 1;
+    document.getElementById('nav-next').textContent = i < STEP_ORDER.length - 1 ? `${stepName(STEP_BTNS[i + 1])} →` : '끝';
+    document.getElementById('nav-label').innerHTML = `<b>${i + 1}</b> / ${STEP_ORDER.length}`;
+    STEP_BTNS[i].scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
     window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+document.getElementById('nav-prev').onclick = () => go(STEP_ORDER[STEP_ORDER.indexOf(currentStep()) - 1]);
+document.getElementById('nav-next').onclick = () => go(STEP_ORDER[STEP_ORDER.indexOf(currentStep()) + 1]);
+const currentStep = () => document.querySelector('.steps button.active').dataset.step;
+// 단계별 완료 표시
+function renderProgress() {
+    const A = state.achievements;
+    const done = {
+        basic: !!state.name && state.companies.some(c => c.name),
+        list: A.some(a => a.title),
+        kw: A.some(a => a.keywords.length),
+        kpi: A.some(a => a.kpiResult),
+        split: A.some(a => a.actions.some(x => x.raw)),
+        done: A.some(a => a.headline),
+        skill: A.some(a => a.skillsText),
+        write: !!state.summary
+    };
+    STEP_BTNS.forEach(b => b.classList.toggle('done', !!done[b.dataset.step]));
 }
 document.querySelectorAll('.steps button').forEach(b => b.onclick = () => go(b.dataset.step));
 document.querySelectorAll('[data-go]').forEach(b => b.onclick = () => go(b.dataset.go));
 
 /* ---------- 대시보드 ---------- */
 function renderDash() {
+    renderProgress();
     const A = state.achievements.filter(a => a.title || a.note);
     const withKpi = A.filter(a => a.kpis.length).length;
     const withNum = A.filter(a => hasNumber(resultText(a))).length;
@@ -1823,7 +1898,54 @@ function refreshAll() {
 document.querySelector('[data-f="industry"]').addEventListener('input', () => { kpiInd.innerHTML = ''; });
 document.querySelector('[data-f="job"]').addEventListener('input', () => { kpiInd.innerHTML = ''; });
 window.addEventListener('beforeprint', renderDoc);
-refreshAll();
+
+/* ---------- 사용법 · 예시 ---------- */
+function sampleState() {
+    const s = blank();
+    const c = Object.assign(newCompany(), { name: '예시커머스', dept: '서비스기획팀 / 매니저', start: '2022.03', end: '재직중', duty: '커머스 앱 탐색·추천 영역 기획' });
+    const acts = [
+        ['구매 로그를 SQL로 분석해 취향 태그 30종을 정의하고 추천 로직을 설계했습니다', 'place'],
+        ['온보딩에 취향 선택 단계를 추가하고 A/B 테스트로 2주간 검증했습니다', 'price'],
+        ['개발·디자인·MD팀과 주간 리뷰를 열어 태그 기준을 합의했습니다', 'promotion']
+    ].map(([raw, p]) => ({ raw, polished: polish(raw), p }));
+    const a = Object.assign(newAch(c.id), {
+        title: '취향 기반 상품 추천 개편', year: '2년차', period: '2023.04~2023.09', note: '신규 고객 첫 구매가 크게 늘었음',
+        keywords: ['서비스 기획', 'A/B 테스트', '개인화·추천'], kpis: ['구매 전환율(CVR)'], kpiResult: '신규 고객 첫 구매 전환율 1.2% → 2.1%',
+        situation: '신규 고객의 첫 구매 전환율이 1.2%로 낮아 개선 과제를 맡았음',
+        customer: '첫 방문에서 내 취향에 맞는 상품을 빨리 찾고 싶은 신규 고객',
+        competition: '국내외 패션 플랫폼 5곳의 온보딩 취향 선택 방식을 벤치마킹함',
+        actions: acts, contribution: 'PM으로 기획 100%, 데이터 분석 70% (기획1·개발3·디자인1)',
+        insight: '고객이 말하지 않는 불편은 데이터에서 먼저 찾아야 한다는 것을 배웠습니다',
+        headline: '취향 태그 30종 기반 추천 로직 설계로 신규 고객 첫 구매 전환율 1.2% → 2.1%',
+        comps: ['goal', 'problem', 'analysis', 'comm'],
+        skillsText: 'SQL : 구매 로그 추출로 취향 태그 30종 정의\nFigma : 온보딩 취향 선택 화면 설계\nA/B 테스트 : 온보딩 개선안 2주간 효과 검증'
+    });
+    return Object.assign(s, {
+        years: '3년', companies: [c], achievements: [a],
+        summary: '3년 차 서비스 기획자로, 예시커머스에서 커머스 앱 탐색·추천 영역을 맡아왔습니다.\n대표 성과로 취향 기반 추천 개편을 통해 신규 고객 첫 구매 전환율을 1.2%에서 2.1%로 높였습니다.\n데이터로 문제를 정의하고 실험으로 검증하는 방식으로 일합니다.',
+        skills: '서비스 기획, A/B 테스트, 지표 설계, 사용자 리서치', tools: 'Figma, SQL, GA4, Jira, Notion'
+    });
+}
+const intro = document.getElementById('intro');
+const hasData = () => state.achievements.some(a => a.title || a.note || a.kpiResult) || state.companies.some(c => c.name);
+function closeIntro() { intro.style.display = 'none'; try { localStorage.setItem('cv-mate-intro', '1'); } catch (e) {} }
+document.getElementById('open-intro').onclick = () => { go('basic'); intro.style.display = 'block'; };
+document.getElementById('intro-start').onclick = () => { closeIntro(); go('basic'); };
+document.getElementById('intro-sample').onclick = () => {
+    if (hasData() && !confirm('지금 입력한 내용이 예시로 바뀌어요. 먼저 "백업 파일 저장"을 해두는 걸 추천해요. 계속할까요?')) return;
+    closeIntro();
+    state = sampleState(); save(); fillFields();
+    go('write');
+    toast('가상의 예시예요. 위 단계를 눌러 어떻게 채웠는지 보세요');
+};
+
+fillFields();
+let firstVisit = true;
+try { firstVisit = !localStorage.getItem('cv-mate-intro'); } catch (e) {}
+if (firstVisit && !hasData()) intro.style.display = 'block';
+let lastStep = 'basic';
+try { lastStep = localStorage.getItem('cv-mate-step') || 'basic'; } catch (e) {}
+go(lastStep);
 </script>
 </body>
 </html>
