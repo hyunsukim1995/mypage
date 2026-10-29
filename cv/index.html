@@ -50,7 +50,7 @@ header a.home { margin-left: auto; white-space: nowrap; color: white; font-size:
     overflow-x: auto;
 }
 .steps button {
-    flex: 1; min-width: 104px; padding: 10px 8px; border: 1px solid var(--line); border-radius: 8px;
+    flex: 1; min-width: 84px; padding: 10px 8px; border: 1px solid var(--line); border-radius: 8px;
     background: white; color: var(--muted); font-size: 13px; font-weight: 600; cursor: pointer;
 }
 .steps button small { display: block; font-size: 11px; font-weight: 500; opacity: .8; }
@@ -186,10 +186,13 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--brand-light
 
 <nav class="steps">
     <button data-step="basic" class="active">준비<small>기본 정보</small></button>
-    <button data-step="list">STEP 1<small>성과 리스트업</small></button>
-    <button data-step="kpi">STEP 2<small>KPI 검색하기</small></button>
-    <button data-step="split">STEP 3<small>성과 분해</small></button>
-    <button data-step="write">STEP 4<small>기술 정리</small></button>
+    <button data-step="list">1<small>성과 리스트업</small></button>
+    <button data-step="kw">2<small>직무·키워드</small></button>
+    <button data-step="kpi">3<small>KPI·성과</small></button>
+    <button data-step="split">4<small>역할 작성</small></button>
+    <button data-step="done">5<small>성과 완성</small></button>
+    <button data-step="skill">6<small>기술 작성</small></button>
+    <button data-step="write">7<small>결과물 확인</small></button>
     <button data-step="essay">활용<small>자소서·지원동기</small></button>
     <button data-step="interview">보너스<small>예상 면접 질문</small></button>
 </nav>
@@ -227,19 +230,25 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--brand-light
             <div id="companies"></div>
             <div class="actions">
                 <button class="btn ghost" id="add-company">+ 회사 추가</button>
-                <button class="btn" data-go="list">STEP 1 성과 리스트업 →</button>
+                <button class="btn" data-go="list">1. 성과 리스트업 →</button>
             </div>
         </div>
     </section>
 
-    <!-- STEP 1: 성과 리스트업 -->
+    <!-- 1: 성과 리스트업 -->
     <section class="panel" id="p-list">
         <div class="card">
-            <h2>STEP 1. 성과 리스트업</h2>
+            <h2>1. 성과 리스트업</h2>
             <p class="desc">
                 잘 썼는지는 신경 쓰지 말고, 회사에서 한 일 중 <b>"이건 내가 해냈다"</b> 싶은 것을 전부 꺼내 놓는 단계예요.
-                작은 개선도 좋아요. 나중에 중요한 것만 골라 경력기술서에 넣습니다.
+                <b>회사·부서별 / 연차별 / 프로젝트별</b> 세 가지로 나눠 떠올리면 놓친 성과가 보여요.
+                비슷한 경험이 겹쳐도 괜찮아요. 뒤에서 쪼개서 정리합니다.
             </p>
+            <div class="chips" id="list-view" style="margin-bottom:8px">
+                <button class="chip on" data-v="company">회사·부서별</button>
+                <button class="chip" data-v="year">연차별</button>
+                <button class="chip" data-v="project">프로젝트별</button>
+            </div>
             <div class="generated">
                 <div class="label">떠올리기 질문</div>
                 <ul style="margin:0;padding-left:18px" id="prompts"></ul>
@@ -247,19 +256,45 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--brand-light
             <div id="ach-list"></div>
             <div class="actions">
                 <button class="btn ghost" id="add-ach">+ 성과 추가</button>
-                <button class="btn" data-go="kpi">STEP 2 KPI 검색하기 →</button>
+                <button class="btn" data-go="kw">2. 직무·키워드 선택 →</button>
             </div>
         </div>
     </section>
 
-    <!-- STEP 2: KPI 검색 -->
+    <!-- 2: 직무·키워드 선택 -->
+    <section class="panel" id="p-kw">
+        <div class="card">
+            <h2>2. 직무·키워드 선택</h2>
+            <p class="desc">
+                성과마다 <b>실제로 해본 직무 키워드</b>만 고르세요. <b>핵심 키워드</b>는 이 직무라면 꼭 다뤄봤어야 하는 것,
+                <b>확장 키워드</b>는 해봤다면 시장에서 우대받는 것이에요. 고른 키워드로 다음 단계 KPI를 맞춤 추천해요.
+            </p>
+            <div class="row">
+                <div><label>성과</label><select id="kw-ach"></select></div>
+                <div><label>직무</label><select id="kw-job"></select></div>
+            </div>
+            <label>핵심 키워드 (필수 경험)</label>
+            <div class="chips" id="kw-core"></div>
+            <label>확장 키워드 (우대 경험)</label>
+            <div class="chips" id="kw-ext"></div>
+            <label>직접 추가</label>
+            <div class="action-row"><input id="kw-add" placeholder="예) 결제 정책 설계"><button class="btn small" id="kw-add-btn">추가</button></div>
+            <div class="actions"><button class="btn" data-go="kpi">3. KPI·성과 작성 →</button></div>
+        </div>
+    </section>
+
+    <!-- 3: KPI·성과 작성 -->
     <section class="panel" id="p-kpi">
         <div class="card">
-            <h2>STEP 2. KPI 검색하기</h2>
+            <h2>3. KPI·성과 작성</h2>
             <p class="desc">
-                면접관은 "무엇을 했나"보다 <b>"어떤 지표를 얼마나 움직였나"</b>를 봐요.
-                산업·직무에 맞는 KPI를 찾아 각 성과에 연결하세요. 마음에 안 들면 "다시 추천"을 누르세요.
+                경력기술서가 멈추는 지점은 결국 KPI예요. <b>KPI 하나만 고르면</b> 다음 문장까지 이어가기 쉬워져요.
+                지표를 따라 일하지 않았더라도, 내 직무가 무엇으로 평가받는지 기준을 빌려 성과를 규정하면 됩니다.
             </p>
+            <div class="row">
+                <div><label>KPI를 고를 성과</label><select id="kpi-ach"></select></div>
+                <div></div>
+            </div>
             <div class="row3">
                 <div><label>KPI 검색</label><input id="kpi-q" placeholder="예) 전환, 재구매, 비용, 리드타임"></div>
                 <div><label>산업</label><select id="kpi-ind"></select></div>
@@ -272,17 +307,20 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--brand-light
             <div class="kpi-grid" id="kpi-grid"></div>
         </div>
         <div class="card">
-            <h2>성과별 연결된 KPI</h2>
-            <p class="desc">KPI 카드의 "연결" 메뉴로 성과를 고르면 여기에 표시돼요.</p>
+            <h2>나의 KPI 성과 작성하기</h2>
+            <p class="desc">
+                고른 KPI로 성과를 <b>한 줄</b> 적어요. 숫자·비율·금액처럼 크기를 알 수 있는 표현이 들어가야 해요.
+                <b>모르는 숫자는 지어내지 말고 비워두세요.</b> 대략 기억나면 "약 30%"처럼 적고, 나중에 확인해 채우면 됩니다.
+            </p>
             <div id="kpi-linked"></div>
-            <div class="actions"><button class="btn" data-go="split">STEP 3 성과 분해 →</button></div>
+            <div class="actions"><button class="btn" data-go="split">4. 역할 작성 →</button></div>
         </div>
     </section>
 
-    <!-- STEP 3: 성과 분해 -->
+    <!-- 4: 역할 작성 -->
     <section class="panel" id="p-split">
         <div class="card">
-            <h2>STEP 3. 성과 분해</h2>
+            <h2>4. 역할 작성</h2>
             <p class="desc">
                 면접관이 궁금한 건 <b>"왜 했어? (Why)"</b>와 <b>"어떻게 했어? (How)"</b>예요.
                 성과 하나를 <b>3C</b>(배경: 자사 상황 → 고객 니즈 → 경쟁·선례 조사)와
@@ -299,7 +337,7 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--brand-light
                 </ol>
             </div>
             <div id="split-list"></div>
-            <div class="actions"><button class="btn" data-go="write">STEP 4 기술 정리 →</button></div>
+            <div class="actions"><button class="btn" data-go="done">5. 성과 완성 →</button></div>
         </div>
         <div class="card">
             <h2>역량구조도 매칭</h2>
@@ -317,11 +355,43 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--brand-light
         </div>
     </section>
 
-    <!-- STEP 4: 기술 정리 -->
+    <!-- 5: 성과 완성 -->
+    <section class="panel" id="p-done">
+        <div class="card">
+            <h2>5. 성과 완성</h2>
+            <p class="desc">
+                역할(How)과 KPI 성과(Result)를 이어 <b>성과 한 문장</b>을 만들어요. 가장 결정적이었던 액션 하나를 끌어올려
+                결과와 붙이는 게 핵심이에요. 후보 중 마음에 드는 것을 고르고 다듬으세요. 이 문장이 경력기술서의 프로젝트 제목 아래 첫 줄이 돼요.
+            </p>
+            <div id="done-list"></div>
+            <div class="actions"><button class="btn" data-go="skill">6. 기술 작성 →</button></div>
+        </div>
+    </section>
+
+    <!-- 6: 기술 작성 -->
+    <section class="panel" id="p-skill">
+        <div class="card">
+            <h2>6. 기술 작성</h2>
+            <p class="desc">
+                탑티어 경력기술서는 <b>어떤 기술·툴로</b> 성과를 냈는지 구체적으로 써요. 내가 쓴 성과·역할 문장에서 기술을 찾아
+                <b>근거</b>와 함께 추천하고, 같은 직무에서 자주 쓰는 기술로 빠뜨린 것도 점검해요. 실제로 쓴 것만 옮기세요.
+            </p>
+            <div class="row"><div><label>성과</label><select id="sk-ach"></select></div><div></div></div>
+            <label>내 경험에서 찾은 기술</label>
+            <div class="kpi-grid" id="sk-found"></div>
+            <label>같은 직무에서 자주 쓰는 기술</label>
+            <div class="kpi-grid" id="sk-job"></div>
+            <label>나의 기술 (추천을 복사한 뒤 실제로 쓴 방식에 맞게 고치세요 · 한 줄에 하나)</label>
+            <textarea id="sk-text" style="min-height:100px" placeholder="예) Figma : 온보딩 취향 선택 화면 와이어프레임 설계&#10;SQL : 구매 로그 추출로 취향 태그 30종 정의"></textarea>
+            <div class="actions"><button class="btn" data-go="write">7. 결과물 확인 →</button></div>
+        </div>
+    </section>
+
+    <!-- 7: 결과물 확인 -->
     <section class="panel" id="p-write">
         <div class="card no-print">
-            <h2>STEP 4. 기술 정리</h2>
-            <p class="desc">분해한 성과가 회사별 구조화 템플릿으로 자동 정리돼요. 넣을 성과만 체크하고, 요약과 역량을 채우면 완성!</p>
+            <h2>7. 결과물 확인</h2>
+            <p class="desc">성과들이 회사별 템플릿으로 자동 정리돼요. 프로젝트를 쌓아두고, 지원하는 회사에 맞춰 넣을 성과만 고르고 순서를 바꿔 PDF로 저장하세요.</p>
             <label>경력기술서에 넣을 성과 (지원 직무와 가까운 순서로 위에 두세요)</label>
             <div id="include-list"></div>
             <label>핵심 요약 (3~4줄)</label>
@@ -531,6 +601,49 @@ const KEYWORDS = {
     ops: ['운영 프로세스 개선', '업무 자동화', 'CS 운영', '매뉴얼 구축', '품질 관리', '협력사 관리'],
     finance: ['결산', '예산 관리', '세무', '자금 관리', '재무 분석', 'ERP']
 };
+// 확장 키워드: 해봤다면 시장에서 우대받는 경험
+const KEYWORDS_EXT = {
+    planning: ['데이터 기반 의사결정', '그로스 실험', 'SQL 활용', '개인화·추천', '결제·정산 정책', '어드민 설계', 'AI 기능 기획', 'OKR 운영', '신규 사업 기획', '글로벌 서비스'],
+    marketing: ['그로스 마케팅', '마케팅 자동화', 'CRM 시나리오 설계', 'GA4 분석', '브랜드 리뉴얼', '글로벌 마케팅', '라이브커머스', '제휴 마케팅'],
+    md: ['PB 상품 개발', '데이터 기반 발주', '라이브커머스', '글로벌 소싱', '팝업스토어', '상세페이지 기획'],
+    data: ['머신러닝', '실험 설계', '데이터 거버넌스', 'dbt', 'Airflow', '추천 모델', 'BigQuery'],
+    sales: ['해외 영업', 'SaaS 영업', '파트너 채널 구축', 'Salesforce', '입찰·RFP 대응'],
+    hr: ['HRBP', 'People Analytics', '채용 브랜딩', '글로벌 채용', '보상 체계 설계', 'ATS 도입'],
+    design: ['UX 라이팅', '데이터 기반 디자인', '모션 디자인', '접근성', 'BX 디자인'],
+    dev: ['MSA', '쿠버네티스', '대용량 트래픽', '모니터링', '보안', '클라우드 비용 최적화'],
+    ops: ['RPA', 'SQL 활용', 'VOC 분석', 'SLA 관리', '글로벌 운영'],
+    finance: ['IFRS', '연결 결산', 'IPO 준비', 'FP&A', '세무 조정']
+};
+// 기술 사전: [이름, 설명, 찾을 단서, 주로 쓰는 직무(빈 배열이면 공통)]
+const SKILL_DICT = [
+    ['Figma', '와이어프레임·프로토타입 제작', ['화면', '와이어', '프로토', 'UI', '시안', '디자인'], ['planning', 'design']],
+    ['SQL', '데이터 추출·지표 분석', ['SQL', '쿼리', '로그', '데이터 추출', '추출'], ['planning', 'data', 'marketing', 'ops']],
+    ['GA4', '유입·퍼널·전환 분석', ['GA', '퍼널', '전환', '유입', '트래픽'], ['planning', 'marketing']],
+    ['Amplitude', '코호트·리텐션 분석', ['Amplitude', '리텐션', '코호트', '재방문', '이벤트 로그'], ['planning', 'data']],
+    ['A/B 테스트', '실험 설계와 효과 검증', ['A/B', '실험', '테스트'], ['planning', 'marketing', 'data']],
+    ['Jira', '스프린트·백로그 관리', ['Jira', '지라', '스프린트', '백로그', '일정 관리'], ['planning', 'dev', 'design']],
+    ['Confluence', '기획 문서·정책 위키', ['Confluence', 'PRD', '정책', '기획서'], ['planning', 'dev']],
+    ['Notion', '문서화·업무 가이드 워크스페이스', ['노션', 'Notion', '가이드', '매뉴얼', '워크플로우', '문서'], []],
+    ['Excel', '데이터 정리·피벗 집계', ['엑셀', 'Excel', '피벗', '집계', '정산'], []],
+    ['Tableau', '대시보드 시각화', ['Tableau', '태블로', '대시보드', '시각화'], ['data', 'planning']],
+    ['Python', '데이터 처리·업무 자동화', ['Python', '파이썬', '크롤링', '스크립트'], ['data', 'dev']],
+    ['Braze', 'CRM 메시지·푸시 자동화', ['Braze', '푸시', 'CRM', '알림톡', '리마인드'], ['marketing', 'planning']],
+    ['Hotjar', '히트맵·사용자 행동 관찰', ['Hotjar', '히트맵', '사용성', '세션 녹화'], ['planning', 'design']],
+    ['Meta 광고 관리자', '퍼포먼스 광고 운영', ['광고', '캠페인', 'ROAS', '메타'], ['marketing']],
+    ['Slack', '협업 커뮤니케이션·알림 연동', ['슬랙', 'Slack', '공지'], []],
+    ['ChatGPT·Claude', '초안 작성·업무 자동화', ['Claude', 'GPT', '챗GPT', 'LLM', '생성형 AI', 'AI'], []],
+    ['ATS(채용관리시스템)', '지원자·채용 단계 관리', ['ATS', '채용관리', '채용 시스템'], ['hr']],
+    ['Zapier', '업무 툴 연동 자동화', ['Zapier', '연동'], ['ops', 'marketing']],
+    ['Salesforce', '영업 파이프라인 관리', ['Salesforce', '세일즈포스', '영업 파이프라인', '리드 관리'], ['sales']],
+    ['ERP', '재무·재고 데이터 관리', ['ERP', 'SAP', '결산', '재고'], ['finance', 'md', 'ops']],
+    ['Photoshop', '이미지·상세페이지 제작', ['포토샵', 'Photoshop', '상세페이지', '배너', '썸네일'], ['md', 'marketing', 'design']],
+    ['GitHub', '코드 버전 관리·리뷰', ['Git', '깃', '코드 리뷰', '배포'], ['dev']],
+    ['AWS', '클라우드 인프라 운영', ['AWS', '클라우드', '서버', '인프라'], ['dev']]
+];
+// 역할 작성 질문: 문제해결(Place) · 생산성(Price) · 의사소통(Promotion)
+const ROLE_ORDER = ['place', 'price', 'promotion'];
+const ROLE_LABEL = { place: '문제해결', price: '생산성', promotion: '의사소통' };
+const DRILL_Q = '대략 숫자로 말하면 얼마나였나요? (예: 2달 → 2주, 약 30%) 모르면 "모름"이라고 적어주세요. 없는 숫자는 만들지 않아요.';
 const TOOLS = ['Figma', 'Notion', 'Jira', 'Confluence', 'Slack', 'SQL', 'GA4', 'Amplitude', 'Mixpanel', 'Tableau', 'Excel', 'Python', 'Braze', 'Hotjar'];
 const VERBS = ['기획', '설계', '도입', '개선', '주도', '분석', '구축', '자동화', '재정의', '런칭', '검증', '고도화', '표준화', '협상', '단축', '절감', '확보', '전환'];
 const PROMPTS = [
@@ -584,7 +697,8 @@ const newAch = companyId => ({
     id: uid(), companyId: companyId || '', title: '', period: '', note: '',
     kpis: [], before: '', after: '', situation: '', customer: '', competition: '',
     actions: [{ raw: '', polished: '', p: '' }],
-    result: '', contribution: '', insight: '', headline: '', comps: [], include: true
+    result: '', contribution: '', insight: '', headline: '', comps: [], include: true,
+    year: '', keywords: [], kpiResult: '', chat: null, roleMode: '', skillsText: ''
 });
 function blank() {
     const c = newCompany();
@@ -680,7 +794,8 @@ const opts = (obj, sel) => Object.entries(obj).map(([k, v]) => `<option value="$
 
 /* ---------- 단계 이동 ---------- */
 const RENDER = {
-    basic: renderCompanies, list: renderList, kpi: renderKpi, split: renderSplit,
+    basic: renderCompanies, list: renderList, kw: renderKw, kpi: renderKpi, split: renderSplit,
+    done: renderDone, skill: renderSkill,
     write: () => { renderInclude(); renderKeywords(); renderJd(); renderCheck(); renderDoc(); },
     essay: renderEssay,
     interview: renderQuestions
@@ -699,7 +814,7 @@ document.querySelectorAll('[data-go]').forEach(b => b.onclick = () => go(b.datas
 function renderDash() {
     const A = state.achievements.filter(a => a.title || a.note);
     const withKpi = A.filter(a => a.kpis.length).length;
-    const withNum = A.filter(a => hasNumber(a.before + a.after + a.result)).length;
+    const withNum = A.filter(a => hasNumber(resultText(a))).length;
     const polished = A.reduce((n, a) => n + a.actions.filter(x => x.polished).length, 0);
     const score = computeChecks().score;
     document.getElementById('dash').innerHTML = [
@@ -761,7 +876,7 @@ function renderCompanies() {
 }
 document.getElementById('add-company').onclick = () => { state.companies.push(newCompany()); save(); renderCompanies(); };
 
-/* ---------- STEP 1 성과 리스트업 ---------- */
+/* ---------- 1 성과 리스트업 ---------- */
 document.getElementById('prompts').innerHTML = PROMPTS.map(p => `<li>${esc(p)}</li>`).join('');
 function companySelect(a) {
     return `<select data-a="companyId"><option value="">회사 선택</option>${state.companies.map(c =>
@@ -773,27 +888,46 @@ function bindAch(box, a, onChange) {
         el.addEventListener('input', () => { a[el.dataset.a] = el.value; save(); if (onChange) onChange(el.dataset.a); });
     });
 }
+let listView = 'company';
+document.querySelectorAll('#list-view .chip').forEach(ch => ch.onclick = () => {
+    listView = ch.dataset.v;
+    document.querySelectorAll('#list-view .chip').forEach(x => x.classList.toggle('on', x === ch));
+    renderList();
+});
 function renderList() {
     const wrap = document.getElementById('ach-list');
     wrap.innerHTML = '';
+    const keyOf = a => listView === 'company' ? ((companyOf(a) || {}).name || '회사 미선택') :
+        listView === 'year' ? (a.year || '연차 미입력') : '';
+    const groups = [];
     state.achievements.forEach((a, i) => {
-        const box = document.createElement('div');
-        box.className = 'item';
-        box.innerHTML = `
-            <div class="item-head"><strong>성과 ${i + 1}</strong><button class="btn danger small" data-act="del">삭제</button></div>
-            <div class="row3">
-                <div><label>성과 이름 (프로젝트명)</label><input data-a="title" placeholder="예) 취향 기반 상품 추천 개편"></div>
-                <div><label>회사</label>${companySelect(a)}</div>
-                <div><label>기간</label><input data-a="period" placeholder="2023.04~2023.09"></div>
-            </div>
-            <label>한 줄 메모 (무엇이 좋아졌나? 대충 써도 OK)</label>
-            <input data-a="note" placeholder="예) 신규 고객 첫 구매가 거의 2배로 늘었음">`;
-        bindAch(box, a);
-        box.querySelector('[data-act="del"]').onclick = () => {
-            if (!confirm('이 성과를 삭제할까요?')) return;
-            state.achievements.splice(i, 1); save(); renderList();
-        };
-        wrap.appendChild(box);
+        const k = keyOf(a);
+        let g = groups.find(x => x.k === k);
+        if (!g) groups.push(g = { k, items: [] });
+        g.items.push([a, i]);
+    });
+    groups.forEach(g => {
+        if (g.k) wrap.insertAdjacentHTML('beforeend', `<h4 style="margin:18px 0 0;color:var(--brand)">${esc(g.k)}</h4>`);
+        g.items.forEach(([a, i]) => {
+            const box = document.createElement('div');
+            box.className = 'item';
+            box.innerHTML = `
+                <div class="item-head"><strong>성과 ${i + 1}</strong><button class="btn danger small" data-act="del">삭제</button></div>
+                <label>성과 이름 (프로젝트·업무 단위)</label><input data-a="title" placeholder="예) 취향 기반 상품 추천 개편">
+                <div class="row3">
+                    <div><label>회사·부서</label>${companySelect(a)}</div>
+                    <div><label>연차</label><input data-a="year" placeholder="예) 2년차"></div>
+                    <div><label>기간</label><input data-a="period" placeholder="2023.04~2023.09"></div>
+                </div>
+                <label>한 줄 메모 (무엇이 좋아졌나? 대충 써도 OK)</label>
+                <input data-a="note" placeholder="예) 신규 고객 첫 구매가 거의 2배로 늘었음">`;
+            bindAch(box, a);
+            box.querySelector('[data-act="del"]').onclick = () => {
+                if (!confirm('이 성과를 삭제할까요?')) return;
+                state.achievements.splice(i, 1); save(); renderList();
+            };
+            wrap.appendChild(box);
+        });
     });
 }
 document.getElementById('add-ach').onclick = () => {
@@ -801,15 +935,64 @@ document.getElementById('add-ach').onclick = () => {
     save(); renderList();
 };
 
-/* ---------- STEP 2 KPI 검색 ---------- */
+/* ---------- 2 직무·키워드 선택 ---------- */
+// 성과 고르는 select 채우기 (선택 유지)
+function fillAchSelect(sel) {
+    const cur = sel.value;
+    sel.innerHTML = state.achievements.map(a => `<option value="${a.id}">${esc(achName(a))}</option>`).join('');
+    if (cur && state.achievements.some(a => a.id === cur)) sel.value = cur;
+    return state.achievements.find(a => a.id === sel.value);
+}
+const kwAch = document.getElementById('kw-ach'), kwJob = document.getElementById('kw-job');
+function renderKw() {
+    if (!kwJob.options.length) kwJob.innerHTML = opts(JOBS, state.job);
+    const a = fillAchSelect(kwAch);
+    if (!a) return;
+    const core = KEYWORDS[kwJob.value] || [], ext = KEYWORDS_EXT[kwJob.value] || [];
+    const custom = a.keywords.filter(k => !core.includes(k) && !ext.includes(k));
+    const chip = k => `<button class="chip${a.keywords.includes(k) ? ' on' : ''}" data-k="${esc(k)}">${esc(k)}</button>`;
+    document.getElementById('kw-core').innerHTML = [...core, ...custom].map(chip).join('');
+    document.getElementById('kw-ext').innerHTML = ext.map(chip).join('');
+    document.querySelectorAll('#kw-core .chip, #kw-ext .chip').forEach(ch => ch.onclick = () => {
+        const k = ch.dataset.k;
+        a.keywords = a.keywords.includes(k) ? a.keywords.filter(x => x !== k) : [...a.keywords, k];
+        save(); renderKw();
+    });
+}
+kwAch.onchange = kwJob.onchange = renderKw;
+document.getElementById('kw-add-btn').onclick = () => {
+    const inp = document.getElementById('kw-add');
+    const a = state.achievements.find(x => x.id === kwAch.value);
+    const k = inp.value.trim();
+    if (a && k && !a.keywords.includes(k)) { a.keywords.push(k); save(); }
+    inp.value = ''; renderKw();
+};
+
+/* ---------- 3 KPI·성과 작성 ---------- */
 let kpiSeed = 0;
-const kpiInd = document.getElementById('kpi-ind'), kpiJob = document.getElementById('kpi-job'), kpiQ = document.getElementById('kpi-q');
+const kpiInd = document.getElementById('kpi-ind'), kpiJob = document.getElementById('kpi-job'),
+    kpiQ = document.getElementById('kpi-q'), kpiAch = document.getElementById('kpi-ach');
 function kpiPool() {
     const seen = new Set(), out = [];
     const push = (arr, src) => (arr || []).forEach(k => { if (!seen.has(k[0])) { seen.add(k[0]); out.push({ name: k[0], desc: k[1], formula: k[2], src }); } });
     push(KPI_IND[kpiInd.value], INDUSTRIES[kpiInd.value]);
     push(KPI_JOB[kpiJob.value], JOBS[kpiJob.value]);
     return out;
+}
+function allKpis() {
+    const all = [], seen = new Set();
+    Object.entries(KPI_JOB).forEach(([j, arr]) => arr.forEach(k => all.push({ name: k[0], desc: k[1], formula: k[2], src: JOBS[j] })));
+    Object.entries(KPI_IND).forEach(([j, arr]) => arr.forEach(k => all.push({ name: k[0], desc: k[1], formula: k[2], src: INDUSTRIES[j] })));
+    return all.filter(k => !seen.has(k.name) && seen.add(k.name));
+}
+// 예시 문장 (숫자는 형식 예시일 뿐, 내 성과엔 실제 숫자만)
+function exampleFor(n) {
+    const b = n.split('(')[0].trim();
+    if (/(시간|기간|리드타임|소요|사이클|MTTR|속도|Latency|결산)/.test(n)) return `${b} 40% 단축`;
+    if (/(비용|CAC|CPA|원가|폐기|이탈|Churn|불량|오류|반품|품절|연체|퇴사|문의|장애)/.test(n)) return `${b} 25% 감소`;
+    if (/(점수|NPS|SUS|만족도|평점|정확도|AUC)/.test(n)) return `${b} 4.2점 → 4.6점`;
+    if (/(수$|건수|DAU|MAU|조회|구독자|가입|활성)/.test(n)) return `${b} 2배 증가`;
+    return `${b} 15%p 개선`;
 }
 function shuffled(arr, seed) {
     const a = arr.slice();
@@ -822,55 +1005,83 @@ function renderKpi() {
         kpiInd.innerHTML = opts(INDUSTRIES, state.industry);
         kpiJob.innerHTML = opts(JOBS, state.job);
     }
+    const a = fillAchSelect(kpiAch);
     const q = kpiQ.value.trim().toLowerCase();
-    let pool = kpiPool();
+    let pool, label;
     if (q) {
-        // 검색어가 있으면 전체 KPI에서 찾기
-        const all = [];
-        Object.entries(KPI_JOB).forEach(([j, arr]) => arr.forEach(k => all.push({ name: k[0], desc: k[1], formula: k[2], src: JOBS[j] })));
-        Object.entries(KPI_IND).forEach(([j, arr]) => arr.forEach(k => all.push({ name: k[0], desc: k[1], formula: k[2], src: INDUSTRIES[j] })));
-        const seen = new Set();
-        pool = all.filter(k => (k.name + k.desc).toLowerCase().includes(q) && !seen.has(k.name) && seen.add(k.name));
+        pool = allKpis().filter(k => (k.name + k.desc).toLowerCase().includes(q));
+        label = `검색 결과 ${pool.length}개`;
     } else {
-        pool = shuffled(pool, kpiSeed).slice(0, 8);
+        // 2단계에서 고른 키워드와 겹치는 KPI를 먼저
+        const STOP = ['개선', '기획', '서비스', '관리', '운영', '분석', '설계', '전략', '데이터', '수립', '구축', '활용'];
+        const toks = a ? [...new Set(a.keywords.flatMap(k => k.split(/[\s·/,()]+/)).filter(t => t.length >= 2 && !STOP.includes(t)))] : [];
+        const score = k => toks.filter(t => (k.name + k.desc).includes(t)).length;
+        const matched = toks.length ? allKpis().filter(k => score(k) > 0).sort((x, y) => score(y) - score(x)) : [];
+        const rest = shuffled(kpiPool().filter(k => !matched.some(m => m.name === k.name)), kpiSeed);
+        pool = [...shuffled(matched, kpiSeed).slice(0, 4), ...rest].slice(0, 8);
+        label = `${INDUSTRIES[kpiInd.value]} × ${JOBS[kpiJob.value]}${matched.length ? ` · 내 키워드 맞춤 ${Math.min(4, matched.length)}개 포함` : ''}`;
     }
-    document.getElementById('kpi-count').textContent = q ? `검색 결과 ${pool.length}개` : `${INDUSTRIES[kpiInd.value]} × ${JOBS[kpiJob.value]} 추천 ${pool.length}개`;
-    const achOpts = state.achievements.map(a => `<option value="${a.id}">${esc(achName(a))}</option>`).join('');
-    document.getElementById('kpi-grid').innerHTML = pool.map((k, i) => `
-        <div class="kpi"><strong>${esc(k.name)}</strong> <span class="tag">${esc(k.src)}</span>
+    document.getElementById('kpi-count').textContent = label;
+    document.getElementById('kpi-grid').innerHTML = pool.map((k, i) => {
+        const on = a && a.kpis.includes(k.name);
+        return `<div class="kpi"${on ? ' style="border-color:var(--brand)"' : ''}><strong>${esc(k.name)}</strong> <span class="tag">${esc(k.src)}</span>
             <p>${esc(k.desc)}</p><div class="formula">산출: ${esc(k.formula)}</div>
-            <select data-kpi="${i}" style="margin-top:8px"><option value="">+ 성과에 연결</option>${achOpts}</select>
-        </div>`).join('') || '<p class="desc">찾는 KPI가 없어요. 다른 단어로 검색해 보세요.</p>';
-    document.querySelectorAll('[data-kpi]').forEach(sel => sel.onchange = () => {
-        const a = state.achievements.find(x => x.id === sel.value);
-        const k = pool[+sel.dataset.kpi];
-        if (a && !a.kpis.includes(k.name)) { a.kpis.push(k.name); save(); toast(`"${achName(a)}"에 ${k.name} 연결`); }
-        sel.value = '';
-        renderLinked();
+            <div class="desc" style="margin:6px 0 0;font-size:12px">예시 "${esc(exampleFor(k.name))}"</div>
+            <button class="btn ${on ? '' : 'ghost '}small" data-kpi="${i}" style="margin-top:8px">${on ? '✓ 연결됨' : '+ 이 성과에 연결'}</button>
+        </div>`;
+    }).join('') || '<p class="desc">찾는 KPI가 없어요. 다른 단어로 검색하거나 아래에서 직접 입력하세요.</p>';
+    document.querySelectorAll('[data-kpi]').forEach(btn => btn.onclick = () => {
+        if (!a) return;
+        const k = pool[+btn.dataset.kpi];
+        a.kpis = a.kpis.includes(k.name) ? a.kpis.filter(x => x !== k.name) : [...a.kpis, k.name];
+        save(); renderKpi();
     });
     renderLinked();
 }
+kpiAch.onchange = renderKpi;
 function renderLinked() {
-    document.getElementById('kpi-linked').innerHTML = state.achievements.map(a => `
-        <div class="item"><strong>${esc(achName(a))}</strong>
-            <div class="chips">${a.kpis.map((k, i) => `<button class="chip on" data-un="${a.id}|${i}">${esc(k)}<span class="x">✕</span></button>`).join('') || '<span class="desc" style="margin:0">아직 연결된 KPI가 없어요</span>'}</div>
-        </div>`).join('');
-    document.querySelectorAll('[data-un]').forEach(b => b.onclick = () => {
-        const [id, i] = b.dataset.un.split('|');
-        state.achievements.find(a => a.id === id).kpis.splice(+i, 1);
-        save(); renderLinked();
+    const wrap = document.getElementById('kpi-linked');
+    wrap.innerHTML = '';
+    state.achievements.forEach(a => {
+        const box = document.createElement('div');
+        box.className = 'item';
+        const ex = a.kpis[0] ? exampleFor(a.kpis[0]) : '채용 리드타임 25% 단축';
+        box.innerHTML = `<strong>${esc(achName(a))}</strong>
+            <div class="chips">${a.kpis.map((k, i) => `<button class="chip on" data-un="${i}">${esc(k)}<span class="x">✕</span></button>`).join('') || '<span class="desc" style="margin:0">아직 고른 KPI가 없어요</span>'}</div>
+            <div class="action-row"><input class="kpi-direct" placeholder="직접 입력 (맞는 KPI가 없을 때) 예: 신규 거래처 확보 건수"><button class="btn small">저장</button></div>
+            <label>✍ 나의 KPI 성과 한 줄</label>
+            <input data-a="kpiResult" placeholder="예) ${esc(ex)}">
+            <div class="hint kr-hint"></div>
+            <div class="row" style="margin-top:6px">
+                <div><input data-a="before" placeholder="(선택) Before 예) 2달"></div>
+                <div><input data-a="after" placeholder="(선택) After 예) 2주"></div>
+            </div>`;
+        const hint = box.querySelector('.kr-hint');
+        const upd = () => { hint.textContent = a.kpiResult && !hasNumber(a.kpiResult) ? '숫자·비율·금액이 없어요. 모르면 비워두고, 대략 기억나면 "약 ○%"로 적어두세요.' : ''; };
+        bindAch(box, a, upd); upd();
+        box.querySelectorAll('[data-un]').forEach(b => b.onclick = () => { a.kpis.splice(+b.dataset.un, 1); save(); renderKpi(); });
+        const di = box.querySelector('.kpi-direct');
+        box.querySelector('.action-row .btn').onclick = () => {
+            const v = di.value.trim();
+            if (v && !a.kpis.includes(v)) { a.kpis.push(v); save(); renderKpi(); }
+        };
+        wrap.appendChild(box);
     });
 }
 kpiInd.onchange = kpiJob.onchange = () => { kpiSeed = 0; renderKpi(); };
 kpiQ.oninput = renderKpi;
 document.getElementById('kpi-shuffle').onclick = () => { kpiQ.value = ''; kpiSeed++; renderKpi(); };
 
-/* ---------- STEP 3 성과 분해 ---------- */
+/* ---------- 4 역할 작성 ---------- */
 function polish(raw, a) {
-    let s = raw.trim().replace(/[.。]+$/, '');
+    let s = String(raw || '').trim().replace(/[.。]+$/, '');
+    const m = s.match(/\s*(\([^)]*\))$/);
+    if (m) s = s.slice(0, -m[0].length).replace(/[.。]+$/, '');
+    // "써보게 했습니다"처럼 띄어 쓴 '했다'는 "써보게 함"으로
+    const sep = /\s(했습니다|하였습니다|했다|했음|하였음)$/.test(s);
+    if (sep) s = s.replace(/\s(했습니다|하였습니다|했다|했음|하였음)$/, '');
     POLISH_RULES.forEach(([re, to]) => { s = s.replace(re, to); });
-    s = s.trim();
-    return s;
+    return (s.trim() + (sep ? ' 함' : '') + (m ? ' ' + m[1] : '')).trim();
 }
 function polishHints(s) {
     const h = [];
@@ -883,7 +1094,9 @@ function polishHints(s) {
     if (s.length && s.length < 12) h.push('무엇을, 어떻게 했는지 조금 더 구체적으로');
     return h;
 }
+const resultText = a => [a.kpiResult, a.before, a.after, a.result].join(' ');
 function kpiLine(a) {
+    if (a.kpiResult) return a.kpiResult;
     const k = a.kpis.join(', ');
     if (a.before && a.after) return `${k ? k + ' ' : ''}${a.before} → ${a.after}`;
     if (a.after) return `${k ? k + ' ' : ''}${a.after}`;
@@ -900,12 +1113,25 @@ function achBullets(a) {
     return out;
 }
 // 소제목 공식: How(3P 중 하나) + Result(Product)
-function shortHow(t) {
-    let h = String(t || '').split(/,|하고 |하여 |해서 |했고 |하며 /)[0].trim();
-    h = h.replace(/(을|를)\s+(\S+)$/, ' $2');
+const ACTION_NOUNS = ['기획', '설계', '개발', '도입', '개선', '구축', '자동화', '운영', '분석', '정의', '런칭', '출시', '검증', '재정의', '고도화',
+    '표준화', '협상', '설득', '안내', '공지', '제작', '리뉴얼', '전환', '통합', '대체', '최적화', '조율', '교육', '구현', '적용', '소통', '파악', '수립', '정비'];
+function howClauses(t) {
+    return String(t || '').replace(/\([^)]*\)/g, '')
+        .split(/,\s*|(?:하여|해서|하고|하며|했고|했으며|했는데|는데|해)\s/)
+        .map(c => c.trim().replace(/^.*(?:[아어여해싸라]서|위해서?|면서)\s/, '').replace(/[.。]+$/, ''))
+        .filter(Boolean);
+}
+const endsWithAction = c => ACTION_NOUNS.some(n => c.endsWith(n));
+// 액션 문장에서 소제목용 How 구절 뽑기 ("~를 직접 개발" → "~ 직접 개발")
+function shortHow(t, strict) {
+    const cl = howClauses(t);
+    let h = cl.find(endsWithAction);
+    if (!h) { if (strict) return ''; h = cl[0] || ''; }
+    h = h.replace(/(\S)(을|를)\s+((?:직접|새로|함께|다시)\s+)?(\S+)$/, '$1 $3$4');
     return h.length > 40 ? h.slice(0, 40) + '…' : h;
 }
 function productPhrase(a) {
+    if (a.kpiResult) return a.kpiResult.trim();
     const k = a.kpis[0] || '';
     if (a.before && a.after) return `${k ? k + ' ' : ''}${a.before}→${a.after} 달성`;
     if (a.after) return `${k ? k + ' ' : ''}${a.after} 달성`;
@@ -923,7 +1149,7 @@ function headlineFor(a, prefer) {
 }
 function suggestComps(a) {
     const c = new Set();
-    if ((a.before && a.after) || hasNumber(a.result)) c.add('goal');
+    if (hasNumber(resultText(a))) c.add('goal');
     if (a.actions.some(x => x.p === 'place')) c.add('problem');
     if (a.actions.some(x => x.p === 'promotion')) c.add('comm');
     if (a.competition || a.kpis.length) c.add('analysis');
@@ -958,16 +1184,21 @@ function renderSplit() {
             <label>Competition · 경쟁사·선례(BP)는 어떻게 하고 있었나? 무엇을 조사했나?</label>
             <textarea data-a="competition" placeholder="예) 국내외 패션 플랫폼 5곳의 온보딩 취향 선택 방식을 벤치마킹함"></textarea>
             <h4 style="margin:16px 0 0;color:var(--brand)">4P · What & How (결과와 과정)</h4>
-            <label>Product · 결과 KPI <span class="desc" style="font-weight:400">${a.kpis.length ? esc(a.kpis.join(', ')) : '— STEP 2에서 연결하세요'}</span></label>
-            <div class="row">
-                <div><input data-a="before" placeholder="Before 예) 1.2%"></div>
-                <div><input data-a="after" placeholder="After 예) 2.1% (+75%)"></div>
-            </div>
+            <label>Product · 결과 <span class="desc" style="font-weight:400">${a.kpis.length ? esc(a.kpis.join(', ')) : 'KPI 미선택'}</span></label>
+            <div class="generated" style="margin-top:0">${esc(kpiLine(a)) || '<span style="color:var(--muted)">3단계에서 KPI 성과 한 줄을 적어주세요.</span>'}</div>
             <div class="hint drill"></div>
-            <label>How · 내가 한 액션 (각 액션이 Place·Price·Promotion 중 무엇인지 고르세요)</label>
-            <div class="actions-wrap"></div>
-            <button class="btn ghost small" data-act="addx" style="margin-top:8px">+ 액션 추가</button>
-            <button class="btn small" data-act="polishall" style="margin-top:8px">전체 역할 다듬기</button>
+            <label>How · 내가 한 액션</label>
+            <div class="chips rmode">
+                <button class="chip" data-m="chat">💬 질문으로 꺼내기</button>
+                <button class="chip" data-m="self">✎ 직접 작성</button>
+            </div>
+            <div class="chat-wrap"></div>
+            <div class="self-wrap">
+                <p class="desc" style="margin:8px 0 0">각 액션이 Place(문제해결)·Price(생산성)·Promotion(의사소통) 중 무엇인지 고르세요.</p>
+                <div class="actions-wrap"></div>
+                <button class="btn ghost small" data-act="addx" style="margin-top:8px">+ 액션 추가</button>
+                <button class="btn small" data-act="polishall" style="margin-top:8px">전체 역할 다듬기</button>
+            </div>
             <label>그 밖의 성과 (선택 · 한 줄에 하나)</label>
             <textarea data-a="result" placeholder="예) 해당 로직을 메인 추천 영역 전체로 확대 적용"></textarea>
             <label>내 기여도 / 팀 구성</label>
@@ -985,7 +1216,7 @@ function renderSplit() {
             const kl = kpiLine(a);
             const b = achBullets(a);
             hl.placeholder = headlineFor(Object.assign({}, a, { headline: '' })) || '예) 취향 태그 기반 추천 로직 설계를 통한 구매 전환율 1.2%→2.1% 달성';
-            box.querySelector('.drill').textContent = (a.before && a.after) || hasNumber(a.result) ? '' :
+            box.querySelector('.drill').textContent = hasNumber(resultText(a)) ? '' :
                 '얼마나? 대략이라도 숫자를 적어보세요 (예: 약 3배, 20건 → 4건). 정확도보다 논리 구조가 중요해요.';
             gen.innerHTML = `<div style="font-weight:700">${esc(headlineFor(a))}</div>` + (kl ? `<div style="font-weight:600">${esc(kl)}</div>` : '') +
                 (b.length ? `<ul style="margin:4px 0 0;padding-left:18px">${b.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : '<span style="color:var(--muted)">위 항목을 채우면 여기에 정리돼요.</span>');
@@ -1038,15 +1269,183 @@ function renderSplit() {
             a.actions.forEach(x => { if (x.raw) x.polished = polish(x.raw, a); });
             save(); drawActions(); refresh(); toast('경력기술서 문체로 다듬었어요');
         };
+        // 역할 작성 모드: 질문 대화 / 직접 작성
+        const chatWrap = box.querySelector('.chat-wrap'), selfWrap = box.querySelector('.self-wrap');
+        const setMode = m => {
+            a.roleMode = m; save();
+            box.querySelectorAll('.rmode .chip').forEach(c => c.classList.toggle('on', c.dataset.m === m));
+            chatWrap.style.display = m === 'chat' ? 'block' : 'none';
+            selfWrap.style.display = m === 'self' ? 'block' : 'none';
+            if (m === 'chat') drawChat(a, chatWrap, () => { setMode('self'); drawActions(); refresh(); });
+        };
+        box.querySelectorAll('.rmode .chip').forEach(c => c.onclick = () => setMode(c.dataset.m));
         drawActions(); drawComps(); refresh();
+        setMode(a.roleMode || (a.actions.some(x => x.raw) ? 'self' : 'chat'));
         wrap.appendChild(box);
     });
     renderCompBoard();
 }
+/* 질문 대화: 세 관점으로 하나씩 묻고, 숫자가 없으면 한 번 더 "얼마나?" */
+function roleQuestion(a, p) {
+    const t = achName(a), k = a.kpiResult || a.kpis[0];
+    return {
+        place: `[문제해결] "${t}"에서 ${k ? josa(`"${k}"`, '을/를') + ' 만들기까지' : '성과를 내기까지'} 가장 큰 걸림돌은 무엇이었나요? 그 문제를 어디서 발견했고, 어떻게 풀었는지 말씀해 주세요.`,
+        price: '[생산성] 같은 일을 더 빠르게, 더 적은 비용·인원으로 하게 된 부분이 있나요? 이전과 비교해 시간이나 비용이 얼마나 달라졌나요?',
+        promotion: '[의사소통] 이 일을 추진하며 설득하거나 조율해야 했던 상대가 있었나요? 그들은 무엇을 걱정했고, 어떻게 풀어서 결정됐나요?'
+    }[p];
+}
+function newChat(a) {
+    return { i: 0, follow: false, ans: {}, log: [{ who: 'q', text: roleQuestion(a, 'place') }] };
+}
+function chatSend(a, text, skip) {
+    const c = a.chat, p = ROLE_ORDER[c.i];
+    if (!p) return;
+    text = text.trim();
+    if (!text && !skip) return;
+    c.log.push({ who: 'me', text: skip ? '(건너뛰기)' : text });
+    const unknown = skip || /^(모름|없음|모르겠|패스|건너)/.test(text);
+    if (!unknown) {
+        if (!c.follow) {
+            c.ans[p] = text;
+            if (!hasNumber(text)) { c.follow = true; c.log.push({ who: 'q', text: DRILL_Q }); return; }
+        } else {
+            c.ans[p] = (c.ans[p] || '') + (text.length <= 40 ? ` (${text})` : ' ' + text);
+        }
+    }
+    c.follow = false;
+    c.i++;
+    const next = ROLE_ORDER[c.i];
+    c.log.push({ who: 'q', text: next ? roleQuestion(a, next) : '세 관점 모두 들었어요. "이제 정리해주세요"를 누르면 역할 액션으로 정리해 드려요.' });
+}
+function drawChat(a, el, onDone) {
+    if (!a.chat) a.chat = newChat(a);
+    const c = a.chat;
+    const got = ROLE_ORDER.filter(p => c.ans[p]);
+    el.innerHTML = `<div class="item" style="background:white">
+        <div style="max-height:320px;overflow:auto" class="log">${c.log.map(m => m.who === 'q'
+            ? `<div style="background:var(--bg);border-radius:10px;padding:10px;margin:6px 40px 6px 0;font-size:13px;line-height:1.6">${esc(m.text)}</div>`
+            : `<div style="background:var(--brand);color:white;border-radius:10px;padding:10px;margin:6px 0 6px 40px;font-size:13px;line-height:1.6">${esc(m.text)}</div>`).join('')}</div>
+        <div class="desc" style="margin:8px 0 0">모은 액션 ${got.length}개 ${ROLE_ORDER.map(p => `<span class="tag" style="${c.ans[p] ? '' : 'opacity:.4'}">${c.ans[p] ? '✓ ' : ''}${ROLE_LABEL[p]}</span>`).join(' ')}</div>
+        ${c.i < 3 ? `<textarea class="cin" style="margin-top:8px;min-height:60px" placeholder="편하게 길게 적어도 돼요"></textarea>` : ''}
+        <div class="actions" style="margin-top:8px">
+            ${c.i < 3 ? '<button class="btn small" data-c="send">보내기</button><button class="btn ghost small" data-c="skip">모름·건너뛰기</button>' : ''}
+            <button class="btn ${c.i >= 3 ? '' : 'ghost '}small" data-c="done"${got.length ? '' : ' disabled'}>이제 정리해주세요</button>
+            <button class="btn ghost small" data-c="reset">대화 새로 시작</button>
+        </div></div>`;
+    const log = el.querySelector('.log'); log.scrollTop = log.scrollHeight;
+    const cin = el.querySelector('.cin');
+    const act = (fn) => { fn(); save(); drawChat(a, el, onDone); const n = el.querySelector('.cin'); if (n) n.focus(); };
+    const btn = k => el.querySelector(`[data-c="${k}"]`);
+    if (btn('send')) btn('send').onclick = () => act(() => chatSend(a, cin.value));
+    if (btn('skip')) btn('skip').onclick = () => act(() => chatSend(a, '', true));
+    if (cin) cin.onkeydown = e => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) btn('send').click(); };
+    btn('reset').onclick = () => { if (confirm('대화를 처음부터 다시 할까요? (정리된 액션은 남아요)')) act(() => { a.chat = newChat(a); }); };
+    btn('done').onclick = () => {
+        ROLE_ORDER.forEach(p => {
+            const t = c.ans[p];
+            if (t && !a.actions.some(x => x.raw === t)) a.actions.push({ raw: t, polished: polish(t), p });
+        });
+        a.actions = a.actions.filter(x => x.raw || x.polished);
+        if (!a.actions.length) a.actions.push({ raw: '', polished: '', p: '' });
+        save(); toast('대화 내용을 역할 액션으로 정리했어요');
+        onDone();
+    };
+}
+
+/* ---------- 5 성과 완성 ---------- */
+function headlineCandidates(a) {
+    const res = productPhrase(a);
+    let acts = a.actions.filter(x => x.raw || x.polished).sort((x, y) => (y.p === 'place') - (x.p === 'place'));
+    const clear = acts.filter(x => shortHow(x.polished || polish(x.raw), true));
+    if (clear.length) acts = clear;
+    const out = [];
+    const add = (t, why) => { if (t && !out.some(o => o.t === t)) out.push({ t, why }); };
+    acts.forEach((x, i) => {
+        const how = shortHow(x.polished || polish(x.raw));
+        const tag = x.p ? ROLE_LABEL[x.p] : '액션';
+        if (res) {
+            add(`${josa(how, '으로/로')} ${res}`, `${tag} 액션 + KPI 성과`);
+            if (i === 0) add(`${josa(how, '을/를')} 통한 ${res}`, `${tag} 액션 + KPI 성과`);
+        } else add(how, `${tag} 액션 (성과 숫자는 비어 있음)`);
+    });
+    if (res && acts[0]) add(`${res} (${shortHow(acts[0].polished || polish(acts[0].raw))})`, '성과 먼저 + 대표 액션');
+    if (res && !acts.length) add(res, 'KPI 성과');
+    return out.slice(0, 5);
+}
+function renderDone() {
+    const wrap = document.getElementById('done-list');
+    wrap.innerHTML = '';
+    state.achievements.forEach(a => {
+        const cands = headlineCandidates(a);
+        const box = document.createElement('div');
+        box.className = 'item';
+        box.innerHTML = `<strong>${esc(achName(a))}</strong>
+            ${!hasNumber(resultText(a)) ? '<div class="hint">KPI 성과에 숫자가 없어요. 3단계에서 확인되는 숫자를 채우면 더 강한 문장이 돼요.</div>' : ''}
+            <div style="margin-top:8px">${cands.map((c, i) => `<label style="display:flex;gap:8px;align-items:flex-start;font-weight:400;margin:6px 0;cursor:pointer">
+                <input type="radio" name="hl-${a.id}" value="${i}" style="width:auto;margin-top:3px"${a.headline === c.t ? ' checked' : ''}>
+                <span><span style="font-size:14px">${esc(c.t)}</span><br><span class="desc" style="font-size:12px">근거: ${esc(c.why)}</span></span></label>`).join('')
+                || '<p class="desc">4단계에서 역할을 작성하면 후보가 만들어져요.</p>'}</div>
+            <label>최종 성과 문장 (직접 다듬기)</label>
+            <input data-a="headline" placeholder="후보를 고르거나 직접 쓰세요">`;
+        bindAch(box, a);
+        box.querySelectorAll('input[type=radio]').forEach(r => r.onchange = () => {
+            a.headline = cands[+r.value].t;
+            box.querySelector('[data-a="headline"]').value = a.headline;
+            save();
+        });
+        wrap.appendChild(box);
+    });
+}
+
+/* ---------- 6 기술 작성 ---------- */
+const skAch = document.getElementById('sk-ach'), skText = document.getElementById('sk-text');
+function achSentences(a) {
+    return [a.title, a.note, a.situation, a.customer, a.competition, a.kpiResult, a.result, ...a.actions.map(x => x.raw || x.polished), ...a.keywords]
+        .join('\n').split(/[\n.]|다\s/).map(x => x.trim()).filter(Boolean);
+}
+function renderSkill() {
+    const a = fillAchSelect(skAch);
+    if (!a) return;
+    const sents = achSentences(a);
+    const found = [];
+    SKILL_DICT.forEach(([name, desc, trig, jobs]) => {
+        for (const t of trig) {
+            const hit = sents.find(x => x.toLowerCase().includes(t.toLowerCase()));
+            if (hit) {
+                const clause = howClauses(hit).find(c => c.toLowerCase().includes(t.toLowerCase()));
+                found.push({ name, desc, why: hit.length > 60 ? hit.slice(0, 60) + '…' : hit, use: clause && clause.length <= 50 ? polish(clause) : '' });
+                break;
+            }
+        }
+    });
+    const jobSk = SKILL_DICT.filter(([name, , , jobs]) => (!jobs.length || jobs.includes(state.job)) && !found.some(f => f.name === name))
+        .slice(0, 6).map(([name, desc]) => ({ name, desc }));
+    const card = (k, i, kind) => `<div class="kpi"><strong>${esc(k.name)}</strong><p>${esc(k.desc)}</p>
+        ${k.why ? `<div class="formula">근거: "${esc(k.why)}"</div>` : ''}
+        <button class="btn ghost small" data-sk="${kind}${i}" style="margin-top:8px">아래에 복사하기</button></div>`;
+    document.getElementById('sk-found').innerHTML = found.slice(0, 6).map((k, i) => card(k, i, 'f')).join('') ||
+        '<p class="desc">작성한 내용에서 찾은 기술이 없어요. 역할 문장에 실제로 쓴 툴 이름을 넣어보세요.</p>';
+    document.getElementById('sk-job').innerHTML = jobSk.map((k, i) => card(k, i, 'j')).join('');
+    skText.value = a.skillsText || '';
+    document.querySelectorAll('[data-sk]').forEach(b => b.onclick = () => {
+        const kind = b.dataset.sk[0], i = +b.dataset.sk.slice(1);
+        const k = kind === 'f' ? found[i] : jobSk[i];
+        const line = `${k.name} : ${k.use || k.desc}`;
+        if (!lines(a.skillsText).some(l => l.startsWith(k.name + ' :'))) {
+            a.skillsText = (a.skillsText ? a.skillsText.replace(/\n*$/, '\n') : '') + line;
+            skText.value = a.skillsText; save();
+        }
+        skText.focus();
+    });
+}
+skAch.onchange = renderSkill;
+skText.oninput = () => { const a = state.achievements.find(x => x.id === skAch.value); if (a) { a.skillsText = skText.value; save(); } };
+const skillNames = a => lines(a.skillsText).map(l => l.split(/\s*:\s*/)[0]).filter(Boolean);
+
 document.getElementById('verb-chips').innerHTML = VERBS.map(v => `<button class="chip">${esc(v)}</button>`).join('');
 document.querySelectorAll('#verb-chips .chip').forEach(ch => ch.onclick = () => copy(ch.textContent, `"${ch.textContent}" 복사됨`));
 
-/* ---------- STEP 4 기술 정리 ---------- */
+/* ---------- 7 결과물 확인 ---------- */
 function renderInclude() {
     const wrap = document.getElementById('include-list');
     wrap.innerHTML = state.achievements.map((a, i) => `
@@ -1137,14 +1536,16 @@ function computeChecks() {
         if (!c.name) add('bad', `회사 ${i + 1}의 회사명이 비어 있어요.`);
         else if (!c.start) add('warn', `${c.name}: 근무 기간을 입력하세요.`);
     });
-    if (!A.length) add('bad', '경력기술서에 넣을 성과가 없어요. STEP 1부터 시작해 보세요.');
+    if (!A.length) add('bad', '경력기술서에 넣을 성과가 없어요. 1단계부터 시작해 보세요.');
     else if (A.length < 2) add('warn', '성과가 1개뿐이에요. 회사당 2~4개를 권장해요.');
     A.forEach(a => {
         const n = achName(a);
         const text = [kpiLine(a), ...achBullets(a)].join(' ');
         if (!a.companyId || !companyOf(a)) add('warn', `${n}: 어느 회사의 성과인지 선택하세요.`);
-        if (!a.kpis.length) add('warn', `${n}: 연결된 KPI가 없어요 (STEP 2).`);
-        if (!(a.before && a.after) && !hasNumber(text)) add('bad', `${n}: 숫자로 된 성과가 없어요. Before → After를 채워보세요.`);
+        if (!a.kpis.length) add('warn', `${n}: 고른 KPI가 없어요 (3단계). KPI 선택이 완성의 분기점이에요.`);
+        if (!a.headline) add('warn', `${n}: 5단계에서 성과 한 문장을 골라주세요.`);
+        if (!a.skillsText) add('warn', `${n}: 6단계에서 사용한 기술·툴을 적어주세요.`);
+        if (!(a.before && a.after) && !hasNumber(text)) add('bad', `${n}: 숫자로 된 성과가 없어요. 3단계 "나의 KPI 성과 한 줄"을 채워보세요 (모르는 숫자는 지어내지 말고 확인 후 입력).`);
         else add('ok', `${n}: 수치 성과가 있어요.`);
         if (!a.situation) add('warn', `${n}: 3C의 Company(내 상황·문제)를 적으면 왜 이 일을 했는지 드러나요.`);
         if (!a.customer) add('warn', `${n}: 3C의 Customer(누구를 만족시켜야 했나)를 적어보세요.`);
@@ -1199,10 +1600,12 @@ function renderDoc() {
             html += `<div class="company"><div class="company-head"><strong>${esc(c.name)}</strong><span class="period">${esc([c.start, c.end].filter(Boolean).join(' ~ '))}</span></div>
                 <div class="role">${esc([c.dept, c.duty].filter(Boolean).join(' | '))}</div>`;
             items.forEach(a => {
-                const kl = kpiLine(a);
+                const kl = a.headline || kpiLine(a);
+                const sk = skillNames(a);
                 html += `<div class="project"><strong>${esc(achName(a))}</strong>${a.period ? ` <span class="period">${esc(a.period)}</span>` : ''}
                     ${kl ? `<div class="kpiline">▶ ${esc(kl)}</div>` : ''}
-                    <ul>${achBullets(a).map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>`;
+                    <ul>${achBullets(a).map(x => `<li>${esc(x)}</li>`).join('')}</ul>
+                    ${sk.length ? `<div class="role" style="margin-top:4px">사용 기술 · ${esc(sk.join(', '))}</div>` : ''}</div>`;
             });
             html += `</div>`;
         });
@@ -1225,8 +1628,9 @@ function plainText() {
         if (c.dept || c.duty) out.push([c.dept, c.duty].filter(Boolean).join(' | '));
         items.forEach(a => {
             out.push(`  ▶ ${achName(a)}${a.period ? ' (' + a.period + ')' : ''}`);
-            if (kpiLine(a)) out.push(`    KPI: ${kpiLine(a)}`);
+            if (a.headline || kpiLine(a)) out.push(`    ${a.headline || kpiLine(a)}`);
             achBullets(a).forEach(x => out.push(`   - ${x}`));
+            if (skillNames(a).length) out.push(`   사용 기술: ${skillNames(a).join(', ')}`);
         });
         out.push('');
     });
@@ -1268,6 +1672,9 @@ function stripMods(t) {
 function sentence(t) {
     t = stripMods(t).trim().replace(/[.。]+$/, '');
     if (!t) return '';
+    // 끝의 (2달 → 2주) 같은 괄호는 떼어 문장을 맺은 뒤 다시 붙이기
+    const m = t.match(/\s*(\([^)]*\))$/);
+    if (m && t.length > m[0].length) return sentence(t.slice(0, -m[0].length)).replace(/\.$/, '') + ` ${m[1]}.`;
     if (/(다|요)$/.test(t)) return t + '.';
     const R = [[/(했음|하였음|함)$/, '했습니다'], [/(됐음|되었음|됨)$/, '되었습니다'], [/([았었였])음$/, '$1습니다'],
         [/있음$/, '있었습니다'], [/없음$/, '없었습니다'], [/임$/, '이었습니다']];
@@ -1288,7 +1695,8 @@ function essayFor(a, type, limit, title) {
     const p4 = acts.map(x => sentence(x.raw || x.polished));
     let product = '';
     const k = a.kpis[0];
-    if (a.before && a.after) product = `그 결과 ${k ? josa(k, '이/가') + ' ' : ''}${a.before}에서 ${josa(a.after, '으로/로')} 개선되었습니다.`;
+    if (a.kpiResult) product = `그 결과 ${josa(a.kpiResult.trim().replace(/[.。]+$/, ''), '을/를')} 이뤄냈습니다.`;
+    else if (a.before && a.after) product = `그 결과 ${k ? josa(k, '이/가') + ' ' : ''}${a.before}에서 ${josa(a.after, '으로/로')} 개선되었습니다.`;
     else if (a.after) product = `그 결과 ${k ? k + ' ' : ''}${a.after}의 성과를 냈습니다.`;
     const extra = lines(a.result).map(sentence);
     if (!product && extra.length) product = '그 결과 ' + extra.shift();
@@ -1315,7 +1723,7 @@ function renderEssay() {
     if (cur && A.some(a => a.id === cur)) esAch.value = cur;
     const a = A.find(x => x.id === esAch.value);
     const limit = Math.max(100, +esLimit.value || 700);
-    if (!a) { document.getElementById('es-out').textContent = '먼저 STEP 1~3에서 성과를 분해해 주세요.'; return; }
+    if (!a) { document.getElementById('es-out').textContent = '먼저 1~4단계에서 성과와 역할을 작성해 주세요.'; return; }
     const r = essayFor(a, esType.value, limit, esTitle.value.trim());
     const len = r.text.length;
     const status = len > limit ? `<span class="bad">초과</span>` : len < limit * 0.7 ? `<span class="warn">70% 미만 — 3C·4P를 더 채워보세요</span>` : `<span class="ok">적정</span>`;
@@ -1370,7 +1778,8 @@ function questions() {
         const n = achName(a);
         const firstAct = (a.actions.find(x => x.polished || x.raw) || {});
         const act = firstAct.polished || polish(firstAct.raw || '');
-        if (a.kpis.length && (a.before || a.after)) add(`"${n}"에서 ${josa(a.kpis[0], '을/를')} ${a.before ? a.before + '에서 ' : ''}${josa(a.after || '개선', '으로/로')} 바꿨다고 하셨는데, 이 수치는 어떻게 측정했고 다른 요인의 영향은 어떻게 걸러냈나요?`, '수치 검증 — 숫자를 쓰면 반드시 나와요');
+        if (a.kpiResult) add(`"${n}"에서 "${a.kpiResult}"라고 쓰셨는데, 이 수치는 어떻게 측정했고 다른 요인의 영향은 어떻게 걸러냈나요?`, '수치 검증 — 숫자를 쓰면 반드시 나와요');
+        else if (a.kpis.length && (a.before || a.after)) add(`"${n}"에서 ${josa(a.kpis[0], '을/를')} ${a.before ? a.before + '에서 ' : ''}${josa(a.after || '개선', '으로/로')} 바꿨다고 하셨는데, 이 수치는 어떻게 측정했고 다른 요인의 영향은 어떻게 걸러냈나요?`, '수치 검증 — 숫자를 쓰면 반드시 나와요');
         else if (a.kpis.length) add(`"${n}"의 성과를 ${josa(a.kpis[0], '으로/로')} 판단한 이유는 무엇인가요? 실제로 얼마나 개선됐나요?`, 'KPI 선택 근거');
         else add(`"${n}"의 성과를 숫자로 설명해 주실 수 있나요?`, '정량 성과 확인');
         if (a.situation) add(`"${polish(a.situation)}" 문제를 처음 어떻게 발견했고, 원인은 무엇이라고 정의했나요?`, '문제 정의 능력 (3C · Company)');
